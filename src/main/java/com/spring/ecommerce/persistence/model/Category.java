@@ -17,16 +17,15 @@ public class Category {
 
     @Id @GeneratedValue
     private Long id;
-
     private String name;
     private Long parentID;
 
-    @JsonIgnore
     @Relationship(type = "HAS_PRODUCT",direction = Relationship.Direction.INCOMING)
+    @JsonIgnore
     private Product product;
 
-    @JsonIgnore
     @Relationship(type = "Has_parent", direction = Relationship.Direction.OUTGOING)
+    @JsonIgnore
     private Category parent;
 
 

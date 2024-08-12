@@ -12,10 +12,8 @@ import java.util.List;
 import java.util.Optional;
 @Service
 public class CategoryServiceImpl implements CategoryService {
-
-     @Autowired
+    @Autowired
     private CategoryRepository categoryRepository;
-     @Autowired
     private ProductReprository productReprository;
 
 
@@ -54,23 +52,6 @@ public class CategoryServiceImpl implements CategoryService {
     public List<Category> saveAll(List<Category> categories) {
         return List.of();
     }
-
-//    @Override
-//    public Category update(Long catId, Category category) {
-//       Category existCat = categoryRepository.findById(catId)
-//               .orElseThrow(()-> new RuntimeException("Category not found"));
-//       if (existCat.getParent() != null && !category.getName().isEmpty()) {
-//           existCat.setName(category.getName());
-//       }
-//       if (category.getParent() != null && category.getParent().getId() != null) {
-//           Category parent = categoryRepository.findById(category.getParent().getId())
-//                   .orElseThrow(()-> new RuntimeException("Parent category not found"));
-//           existCat.setParent(parent);
-//       }else {
-//           existCat.setParent(null);
-//       }
-//       return categoryRepository.save(existCat);
-//    }
 
 
     @Override

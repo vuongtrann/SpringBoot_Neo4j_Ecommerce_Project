@@ -23,8 +23,6 @@ public class Product {
     private Double price;
     private Double ratting;
     private String evaluatting;
-
-    @JsonIgnore
     @Relationship(type = "BELONGS_TO", direction = Relationship.Direction.OUTGOING)
     private Category category;
 

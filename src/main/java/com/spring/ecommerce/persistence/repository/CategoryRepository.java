@@ -9,5 +9,4 @@ import java.util.Optional;
 @Repository
 public interface CategoryRepository extends Neo4jRepository<Category, Long> {
     Optional<Category> findByName(String name);
-    Category findCategoriesById(Long id);
 }
