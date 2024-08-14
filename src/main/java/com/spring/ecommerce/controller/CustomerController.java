@@ -16,43 +16,61 @@ import java.util.List;
 public class CustomerController {
     @Autowired
     private CustomerService customerService;
-    @Autowired
-    private CustomerRepository customerRepository;
+
 
     @GetMapping("")
     public RestResponse getAllCustomers() {
-        List<Customer> listCustomer = customerService.findAll();
-        return RestResponse.builder(listCustomer).message("Success").build();
+        try {
+            List<Customer> listCustomer = customerService.findAll();
+            return RestResponse.builder(listCustomer).message("Success").build();
+        } catch (Exception e) {
+            return RestResponse.builder(null).message("Error: " +e.getMessage()).build();
+        }
     }
 
 
     @GetMapping("/{id}")
     public RestResponse getCustomer(@PathVariable Long id) {
-        Customer customer = customerService.findById(id)
-                .orElseThrow(()-> new RuntimeException("Customer not found"));
-
-        return RestResponse.builder(customer).message("Success").build();
+        try {
+            Customer customer = customerService.findById(id)
+                    .orElseThrow(() -> new RuntimeException("Customer not found"));
+            return RestResponse.builder(customer).message("Success").build();
+        }catch (Exception e) {
+                return RestResponse.builder(null).message("Error: " +e.getMessage()).build();
+            }
     }
 
 
     @PostMapping("/add")
     public RestResponse addCustomer(@RequestBody Customer customer) {
-        customerService.save(customer);
-        return RestResponse.builder(customer).message("Success").build();
+        try {
+            customerService.save(customer);
+            return RestResponse.builder(customer).message("Success").build();
+        }catch (Exception e) {
+            return RestResponse.builder(null).message("Error: " +e.getMessage()).build();
+        }
     }
 
 
     @PutMapping("/{id}/update")
     public RestResponse updateCustomer(@RequestBody Customer customer, @PathVariable Long id) {
-        customerService.update(customer, id);
-        return RestResponse.builder(customer).message("Success").build();
+        try {
+            customerService.update(customer, id);
+            return RestResponse.builder(customer).message("Success").build();
+        }catch (Exception e) {
+            return RestResponse.builder(customer).message("Error" + e.getMessage()).build();
+        }
     }
 
 
     @DeleteMapping("/{id}/delete")
     public RestResponse deleteCustomer(@PathVariable Long id) {
+        try{
         customerService.delete(id);
         return RestResponse.builder().message("Success").build();
+        }catch (Exception e) {
+            return RestResponse.builder(null).message("Error: " +e.getMessage()).build();
+        }
     }
 
 

@@ -19,12 +19,12 @@ public class ProductServiceImpl implements ProductService {
     private CategoryRepository categoryRepository;
 
     @Override
-    public List<Product> getAllProduct() {
+    public List<Product> findAll() {
         return productReprository.findAll();
     }
 
     @Override
-    public Optional<Product> getProductById(Long id) {
+    public Optional<Product> findById(Long id) {
         return productReprository.findById(id);
     }
 
