@@ -62,12 +62,11 @@ public class CategoryServiceImpl implements CategoryService {
         if (category.getName() != null && !category.getName().isEmpty()) {
             existingCategory.setName(category.getName());
 
-            //Kiem tra co ton tai parent khong
             if (category.getParentID() != null) {
             Category parentCategory = categoryRepository.findById(category.getParentID())
                     .orElseThrow(() -> new RuntimeException("Parent category not found"));
             existingCategory.setParent(parentCategory);
-            }else { //neu parent == null -> remove relationship
+            }else {
                 existingCategory.setParent(null);
             }
         }
