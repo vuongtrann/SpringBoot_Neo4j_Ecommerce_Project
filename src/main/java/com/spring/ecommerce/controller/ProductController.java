@@ -1,14 +1,10 @@
 package com.spring.ecommerce.controller;
 
-import com.spring.ecommerce.persistence.model.Category;
 import com.spring.ecommerce.persistence.model.Product;
 import com.spring.ecommerce.service.ProductService;
 import com.spring.ecommerce.util.RestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v2/product")
@@ -19,13 +15,13 @@ public class ProductController {
     /**Get all product*/
     @GetMapping("")
     public RestResponse getAllProducts() {
-        return RestResponse.builder(productService.getAllProduct()).message("Success").build();
+        return RestResponse.builder(productService.findAll()).message("Success").build();
     }
 
     /**Get product by id*/
     @GetMapping("/{productId}")
     public RestResponse getProductById(@PathVariable("productId") Long productId) {
-        return RestResponse.builder(productService.getProductById(productId)).message("Success").build();
+        return RestResponse.builder(productService.findById(productId)).message("Success").build();
     }
 
     /**Add product*/

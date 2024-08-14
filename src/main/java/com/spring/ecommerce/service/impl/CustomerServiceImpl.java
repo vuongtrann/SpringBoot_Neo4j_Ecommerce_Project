@@ -33,7 +33,7 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public Customer update(Customer customer, Long id) {
         Optional<Customer> oldCustomer = customerRepository.findById(id);
-        if (oldCustomer.isPresent() && customer.getId().equals(oldCustomer.get().getId())) {
+        if (oldCustomer.isPresent()) {
             oldCustomer.get().setName(customer.getName());
             oldCustomer.get().setEmail(customer.getEmail());
             oldCustomer.get().setPhone(customer.getPhone());
