@@ -80,4 +80,19 @@ public class EvaluateServiceImpl implements EvaluateService {
 
         return evaluateRepository.save(oldEvaluate);
     }
+
+    @Override
+    public List<Evaluate> findByProductId(Long productId) {
+        try{
+            return evaluateRepository.findEvaluateByProductId(productId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public List<Evaluate> findByCustomerId(Long customerId) {
+        return List.of();
+    }
 }
