@@ -23,42 +23,71 @@ public class CategoryController {
     /**Get all category*/
     @GetMapping("")
     public RestResponse getAllCategories() {
-        List<Category> categoryList = categoryService.getAllCategories();
-        return RestResponse.builder(categoryList).message("Success").build();
+        try {
+            List<Category> categoryList = categoryService.getAllCategories();
+            return RestResponse.builder(categoryList).message("Success").build();
+        }catch (Exception e){
+            return RestResponse.builder(null).message(e.getMessage()).build();
+        }
+
     }
 
     /**Get category by id*/
     @GetMapping("/{categoryId}")
     public RestResponse getCategoryById(@PathVariable Long categoryId) {
-        Optional<Category> category = categoryService.getCategoryById(categoryId);
-        return RestResponse.builder(category).message("Success").build();
+        try {
+            Optional<Category> category = categoryService.getCategoryById(categoryId);
+            return RestResponse.builder(category).message("Success").build();
+        }catch (Exception e) {
+            return RestResponse.builder(null).message(e.getMessage()).build();
+        }
     }
 
     /** Add category*/
     @PostMapping("")
     public RestResponse addCategory(@RequestBody Category category) {
-        Category saveCategory = categoryService.save(category);
-        return RestResponse.builder(saveCategory).message("Success").build();
+        try {
+            Category saveCategory = categoryService.save(category);
+            return RestResponse.builder(saveCategory).message("Success").build();
+        }catch (Exception e) {
+            return RestResponse.builder(null).message(e.getMessage()).build();
+        }
+
     }
 
     /** Add category with parent*/
     @PostMapping("/parent")
     public RestResponse addCategoryWithParent( @RequestBody Category category) {
-        Category saveCategory = categoryService.saveWithParentID( category);
-        return RestResponse.builder(saveCategory).message("Success").build();
+        try {
+            Category saveCategory = categoryService.saveWithParentID( category);
+            return RestResponse.builder(saveCategory).message("Success").build();
+        }catch (Exception e) {
+            return RestResponse.builder(null).message(e.getMessage()).build();
+        }
+
     }
 
     /** update category with parent*/
     @PutMapping ("/{categoryId}")
     public RestResponse updateCategory(@PathVariable Long categoryId, @RequestBody Category category) {
-        categoryService.update(categoryId, category);
-        return RestResponse.builder(category).message("Success").build();
+        try {
+            categoryService.update(categoryId, category);
+            return RestResponse.builder(category).message("Success").build();
+        }catch (Exception e) {
+            return RestResponse.builder(null).message(e.getMessage()).build();
+        }
+
     }
 
     @DeleteMapping("/{categoryId}")
     public RestResponse deleteCategory(@PathVariable Long categoryId) {
-        categoryService.deleteById(categoryId);
-        return RestResponse.builder("Deleted category by id : " + categoryId).message("Success").build();
+        try {
+            categoryService.deleteById(categoryId);
+            return RestResponse.builder("Deleted category by id : " + categoryId).message("Success").build();
+        }catch (Exception e){
+            return RestResponse.builder(null).message(e.getMessage()).build();
+        }
+
     }
 
 }
