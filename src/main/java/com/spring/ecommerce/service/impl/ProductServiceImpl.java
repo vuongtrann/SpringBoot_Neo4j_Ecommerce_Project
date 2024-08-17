@@ -44,7 +44,7 @@ public class ProductServiceImpl implements ProductService {
         byte[] imgByte = file.getBytes();
         String imgUrl = Base64.getEncoder().encodeToString(imgByte);
         product.setImageURL(imgUrl);
-        
+
         if (product.getCategory().getId() != null) {
             Category category = categoryRepository.findById(product.getCategory().getId())
                     .orElseThrow(()-> new RuntimeException("Category not found"));
