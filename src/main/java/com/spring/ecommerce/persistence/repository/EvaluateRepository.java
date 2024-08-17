@@ -15,8 +15,6 @@ import java.util.List;
 public interface EvaluateRepository extends Neo4jRepository<Evaluate, Long> {
 
 
-//    @Query("Match (e:evaluate) -[:EVALUATE_FOR]-> (p:product {id:$productId  })  Return e")
-    @Query("Match (e:Evaluate) -[:EVALUATE_FOR]-> (p:Product ) WHERE elementId(p.id) = $productId Return e")
-
+    @Query("Match (e:Evaluate) -[:EVALUATE_FOR]-> (p:Product) where id(p) = $productId Return e")
     public List<Evaluate> findEvaluateByProductId(@Param("productId") Long productId);
 }

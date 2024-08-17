@@ -1,8 +1,10 @@
 package com.spring.ecommerce.service.impl;
 
 import com.spring.ecommerce.persistence.model.Category;
+import com.spring.ecommerce.persistence.model.Evaluate;
 import com.spring.ecommerce.persistence.model.Product;
 import com.spring.ecommerce.persistence.repository.CategoryRepository;
+import com.spring.ecommerce.persistence.repository.EvaluateRepository;
 import com.spring.ecommerce.persistence.repository.ProductReprository;
 import com.spring.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private EvaluateRepository evaluateRepository;
 
     @Override
     public List<Product> findAll() {
@@ -69,6 +74,26 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void delete(Long id) {
         productReprository.deleteById(id);
+    }
+
+
+
+    public Product updateRating( Long idProduct){
+        Optional<Product> productOptional = productReprository.findById(idProduct);
+        if (productOptional.isPresent()){
+            Product existingProduct = productOptional.get();
+            List<Evaluate> evaluates = evaluateRepository.findEvaluateByProductId(idProduct);
+
+            try{
+                double rating = evaluates.stream().mapToDouble( e -> e.getPoints())
+                        .average().getAsDouble();
+                existingProduct.setRatting(rating);
+                return productReprository.save(existingProduct);
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage());
+            }
+
+        }else return null;
     }
 
 
