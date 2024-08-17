@@ -2,7 +2,6 @@ package com.spring.ecommerce.service;
 
 import com.spring.ecommerce.persistence.model.Category;
 import com.spring.ecommerce.persistence.model.Product;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
