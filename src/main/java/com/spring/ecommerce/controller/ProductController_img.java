@@ -3,6 +3,7 @@ package com.spring.ecommerce.controller;
 import com.spring.ecommerce.persistence.model.Product;
 import com.spring.ecommerce.persistence.model.Product_img;
 import com.spring.ecommerce.service.ProductService;
+import com.spring.ecommerce.service.ProductService_img;
 import com.spring.ecommerce.service.impl.ProductServiceImpl_img;
 import com.spring.ecommerce.util.RestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/api/v2/product")
-public class ProductController {
+@RequestMapping("/api/v2/product_img")
+public class ProductController_img {
     @Autowired
-    private ProductService productService;
+    private ProductService_img productService;
 
     /**Get all product*/
     @GetMapping("")
@@ -29,22 +30,24 @@ public class ProductController {
         return RestResponse.builder(productService.findById(productId)).message("Success").build();
     }
 
+
+
+
+
     /**Add product*/
-    @PostMapping(value = "", consumes = "multipart/form-data")
-    public RestResponse addProduct(@RequestPart Product product, @RequestPart("file") MultipartFile file) throws IOException {
+    @PostMapping(value = "", consumes  ="multipart/form-data")
+    public RestResponse addProduct(@RequestPart Product_img product, @RequestPart("file") MultipartFile file) throws IOException {
         return RestResponse.builder(productService.save(product, file)).message("Success").build();
     }
 
-//    /**Add product*/
-//    @PostMapping(value = "", consumes  ="multipart/form-data")
-//    public RestResponse addProduct(@RequestPart Product product, @RequestPart("file") MultipartFile file) throws IOException {
-//        return RestResponse.builder(productService.save(product, file)).message("Success").build();
-//    }
+
+
+
 
 
     /**Update product*/
     @PutMapping("/{productId}")
-    public RestResponse updateProduct(@PathVariable("productId") Long productId, @RequestBody Product product) {
+    public RestResponse updateProduct(@PathVariable("productId") Long productId, @RequestBody Product_img product) {
 //        try{
 //
 //        }

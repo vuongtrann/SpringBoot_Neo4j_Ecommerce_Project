@@ -10,4 +10,8 @@ public interface EvaluateService {
     public Evaluate save(Evaluate evaluate, Long productId, Long customerId);
     public void deleteById(Long id);
     public Evaluate update(Evaluate evaluate, Long id);
+
+    public List<Evaluate> findByProductId(Long productId);
+    public List<Evaluate> findByCustomerId(Long customerId);
+
 }

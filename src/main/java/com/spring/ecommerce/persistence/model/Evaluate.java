@@ -1,5 +1,6 @@
 package com.spring.ecommerce.persistence.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,8 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-@Node("evaluate")
+
+@Node("Evaluate")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -21,9 +23,11 @@ public class Evaluate {
     private int points;
     private String comment;
 
+    @JsonIgnore
     @Relationship(type = "BELONG_TO", direction = Relationship.Direction.OUTGOING)
     private Customer customer;
 
+    @JsonIgnore
     @Relationship(type = "EVALUATE_FOR", direction = Relationship.Direction.OUTGOING)
     private Product product;
 

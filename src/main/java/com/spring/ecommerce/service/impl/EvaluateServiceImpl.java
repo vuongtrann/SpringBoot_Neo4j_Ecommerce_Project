@@ -46,11 +46,12 @@ public class EvaluateServiceImpl implements EvaluateService {
     public Evaluate save(Evaluate evaluate, Long productId, Long customerId) {
         Optional<Product> product = productService.findById(productId);
         Optional<Customer> customer = customerRepository.findById(customerId);
-
         if (product.isPresent() && customer.isPresent()) {
             evaluate.setProduct(product.get());
             evaluate.setCustomer(customer.get());
-            return evaluateRepository.save(evaluate);
+            evaluateRepository.save(evaluate);
+            productService.updateRating(productId);
+            return evaluate;
         }
         else
             return null;
@@ -79,5 +80,20 @@ public class EvaluateServiceImpl implements EvaluateService {
         }
 
         return evaluateRepository.save(oldEvaluate);
+    }
+
+    @Override
+    public List<Evaluate> findByProductId(Long productId) {
+        try{
+            return evaluateRepository.findEvaluateByProductId(productId);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    @Override
+    public List<Evaluate> findByCustomerId(Long customerId) {
+        return List.of();
     }
 }

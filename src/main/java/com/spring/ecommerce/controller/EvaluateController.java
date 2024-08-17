@@ -54,5 +54,14 @@ public class EvaluateController {
       }
     }
 
+    @GetMapping("/{idProduct}/product")
+    public RestResponse getEvaluateProductById(@PathVariable("idProduct") Long idProduct) {
+        try{
+            return RestResponse.builder(evaluateService.findByProductId(idProduct)).message("success").build();
+        }catch (Exception e) {
+            return RestResponse.builder().message("Error:" + e.getMessage()).build();
+        }
+    }
+
 
 }
