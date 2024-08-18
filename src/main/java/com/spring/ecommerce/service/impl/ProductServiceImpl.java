@@ -55,8 +55,6 @@ public class ProductServiceImpl implements ProductService {
             existingProduct.setImageURL(product.getImageURL());
             existingProduct.setDescription(product.getDescription());
             existingProduct.setPrice(product.getPrice());
-            existingProduct.setRatting(product.getRatting());
-            existingProduct.setEvaluatting(product.getEvaluatting());
 
             if(product.getCategory().getId() != null) {
                 Category category = categoryRepository.findById(product.getCategory().getId())
@@ -87,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
             try{
                 double rating = evaluates.stream().mapToDouble( e -> e.getPoints())
                         .average().getAsDouble();
-                existingProduct.setRatting(rating);
+                existingProduct.setRating(rating);
                 return productReprository.save(existingProduct);
             } catch (Exception e) {
                 throw new RuntimeException(e.getMessage());

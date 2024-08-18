@@ -28,6 +28,12 @@ public class Category {
     @JsonIgnore
     private Category parent;
 
+    public Category(String name, Long parentID) {
+        this.name = name;
+        this.parentID = parentID;
+    }
 
-
+    public Category(Long id) {
+        this.id = id;
+    }
 }
