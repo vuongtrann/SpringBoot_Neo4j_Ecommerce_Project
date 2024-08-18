@@ -1,6 +1,6 @@
 package com.spring.ecommerce.persistence.repository;
 
-import com.spring.ecommerce.persistence.model.Evaluate;
+import com.spring.ecommerce.persistence.model.Review;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,9 +12,9 @@ import java.util.List;
 
 
 @Repository
-public interface EvaluateRepository extends Neo4jRepository<Evaluate, Long> {
+public interface ReviewRepository extends Neo4jRepository<Review, Long> {
 
 
     @Query("Match (e:Evaluate) -[:EVALUATE_FOR]-> (p:Product) where id(p) = $productId Return e")
-    public List<Evaluate> findEvaluateByProductId(@Param("productId") Long productId);
+    public List<Review> findEvaluateByProductId(@Param("productId") Long productId);
 }

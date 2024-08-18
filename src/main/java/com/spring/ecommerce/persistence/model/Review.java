@@ -16,12 +16,16 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Evaluate {
+public class Review {
     @Id
     @GeneratedValue
     private Long id;
-    private int points;
+    private Long customerId;
+    private int rating;
     private String comment;
+
+
+
 
     @JsonIgnore
     @Relationship(type = "BELONG_TO", direction = Relationship.Direction.OUTGOING)

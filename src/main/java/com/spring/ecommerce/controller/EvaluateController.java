@@ -1,31 +1,32 @@
 package com.spring.ecommerce.controller;
 
-import com.spring.ecommerce.persistence.model.Evaluate;
-import com.spring.ecommerce.service.EvaluateService;
+import com.spring.ecommerce.persistence.model.Review;
+import com.spring.ecommerce.service.ReviewService;
 import com.spring.ecommerce.util.RestResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v2/evaluate")
+@RequestMapping("/api/v2")
+//@RequestMapping("/api/v2/evaluate")
 public class EvaluateController {
 
     @Autowired
-    private EvaluateService evaluateService;
+    private ReviewService reviewService;
 
-    @GetMapping("")
+    @GetMapping("/evaluate")
     public RestResponse getAllEvaluates() {
         try {
-            return RestResponse.builder(evaluateService.findAll()).message("success").build();
+            return RestResponse.builder(reviewService.findAll()).message("success").build();
         }catch (Exception e){
             return RestResponse.builder(null).message("Error:" + e.getMessage()).build();
         }
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/evaluate/{id}")
     public RestResponse getEvaluateById(@PathVariable("id") Long id) {
         try {
-            return RestResponse.builder(evaluateService.findById(id)).message("success").build();
+            return RestResponse.builder(reviewService.findById(id)).message("success").build();
         }
         catch (Exception e) {
             return RestResponse.builder(null).message("Error:" + e.getMessage()).build();
@@ -33,10 +34,10 @@ public class EvaluateController {
     }
 
 
-    @PostMapping("/add/{proId}/product/{cusId}/customer")
-    public RestResponse addEvaluate(@RequestBody Evaluate evaluate, @PathVariable Long proId, @PathVariable Long cusId) {
+    @PostMapping("/product/{proId}/evaluate")
+    public RestResponse addEvaluate(@RequestBody Review review, @PathVariable("proId") Long proId) {
         try{
-            return RestResponse.builder(evaluateService.save(evaluate, proId, cusId)).message("success").build();
+            return RestResponse.builder(reviewService.save(review, proId)).message("success").build();
         }
         catch (Exception e) {
             return RestResponse.builder().message("Error:" + e.getMessage()).build();
@@ -45,10 +46,10 @@ public class EvaluateController {
     }
 
 
-    @PutMapping("/{id}/update")
-    public RestResponse updateEvaluate(@PathVariable("id") Long id, @RequestBody Evaluate evaluate) {
+    @PutMapping("evaluate/{id}/update")
+    public RestResponse updateEvaluate(@PathVariable("id") Long id, @RequestBody Review review) {
       try{
-          return RestResponse.builder(evaluateService.update(evaluate, id)).build();
+          return RestResponse.builder(reviewService.update(review, id)).build();
       } catch (Exception e){
           return RestResponse.builder().message("Error:" + e.getMessage()).build();
       }
@@ -57,7 +58,7 @@ public class EvaluateController {
     @GetMapping("/{idProduct}/product")
     public RestResponse getEvaluateProductById(@PathVariable("idProduct") Long idProduct) {
         try{
-            return RestResponse.builder(evaluateService.findByProductId(idProduct)).message("success").build();
+            return RestResponse.builder(reviewService.findByProductId(idProduct)).message("success").build();
         }catch (Exception e) {
             return RestResponse.builder().message("Error:" + e.getMessage()).build();
         }
