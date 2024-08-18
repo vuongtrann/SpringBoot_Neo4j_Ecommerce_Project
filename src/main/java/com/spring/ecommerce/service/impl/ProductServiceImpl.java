@@ -1,10 +1,10 @@
 package com.spring.ecommerce.service.impl;
 
 import com.spring.ecommerce.persistence.model.Category;
-import com.spring.ecommerce.persistence.model.Evaluate;
+import com.spring.ecommerce.persistence.model.Review;
 import com.spring.ecommerce.persistence.model.Product;
 import com.spring.ecommerce.persistence.repository.CategoryRepository;
-import com.spring.ecommerce.persistence.repository.EvaluateRepository;
+import com.spring.ecommerce.persistence.repository.ReviewRepository;
 import com.spring.ecommerce.persistence.repository.ProductReprository;
 import com.spring.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class ProductServiceImpl implements ProductService {
     private CategoryRepository categoryRepository;
 
     @Autowired
-    private EvaluateRepository evaluateRepository;
+    private ReviewRepository evaluateRepository;
 
     @Override
     public List<Product> findAll() {
@@ -80,10 +80,10 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> productOptional = productReprository.findById(idProduct);
         if (productOptional.isPresent()){
             Product existingProduct = productOptional.get();
-            List<Evaluate> evaluates = evaluateRepository.findEvaluateByProductId(idProduct);
+            List<Review> reviews = evaluateRepository.findEvaluateByProductId(idProduct);
 
             try{
-                double rating = evaluates.stream().mapToDouble( e -> e.getPoints())
+                double rating = reviews.stream().mapToDouble(e -> e.getRating())
                         .average().getAsDouble();
                 existingProduct.setRating(rating);
                 return productReprository.save(existingProduct);
