@@ -7,7 +7,10 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-@Node("Product")
+import java.util.Collections;
+import java.util.List;
+
+@Node("Product1")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,7 +21,7 @@ public class Product {
     @GeneratedValue
     private Long id;
     private String name;
-    private String imageURL;
+    private List<String> imageURL;
     private String description;
     private Double price;
     private Double rating;
@@ -27,14 +30,14 @@ public class Product {
 
     public Product(String name, String imageURL, String description, Double price) {
         this.name = name;
-        this.imageURL = imageURL;
+        this.imageURL = Collections.singletonList(imageURL);
         this.description = description;
         this.price = price;
     }
 
     public Product(String name, String imageURL, String description, Double price, Category category) {
         this.name = name;
-        this.imageURL = imageURL;
+        this.imageURL = Collections.singletonList(imageURL);
         this.description = description;
         this.price = price;
         this.category = category;

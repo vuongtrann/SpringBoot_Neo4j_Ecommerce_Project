@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-@Node("Category")
+@Node("Category1")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -35,5 +35,8 @@ public class Category {
 
     public Category(Long id) {
         this.id = id;
+    }
+    public Category(String name) {
+        this.name = name;
     }
 }

@@ -21,32 +21,34 @@ public class EcommerceApplication  {
     @Autowired
     private  ReaderService readerService;
 
-//    @Value("${csv.file.path}")
-//    private String filePath;
-
-    @Value("${file.path}")
+    @Value("${csv.file.path}")
     private String filePath;
+    @Value("${csv.file.path}")
+    private String filePath2;
+
+//    @Value("${file.path}")
+//    private String filePath;
 
 
     public static void main(String[] args) {
         SpringApplication.run(EcommerceApplication.class, args);
 
     }
-    @Bean
-    public CommandLineRunner run() {
-        return args -> {
-
-            try {
-                if (Files.exists(Paths.get(filePath))) {
-                    readerService.csvReader(filePath);
-                    System.out.println("Successfully read CSV file");
-                }else {
-                    System.out.println("File not found");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        };
-    }
+//    @Bean
+//    public CommandLineRunner run() {
+//        return args -> {
+//
+//            try {
+//                if (Files.exists(Paths.get(filePath))) {
+//                    readerService.csvReader(filePath);
+//                    System.out.println("Successfully read CSV file");
+//                }else {
+//                    System.out.println("File not found");
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        };
+//    }
 
 }

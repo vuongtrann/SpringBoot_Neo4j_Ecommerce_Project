@@ -34,9 +34,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product save(Product product) {
-        if (product.getCategory().getId() != null) {
-            Category category = categoryRepository.findById(product.getCategory().getId())
+    public Product save(Product product, Long categoryId) {
+        if (categoryId != null) {
+            Category category = categoryRepository.findById(categoryId)
                     .orElseThrow(()-> new RuntimeException("Category not found"));
             if(category != null) {
                 product.setCategory(category);
