@@ -90,7 +90,25 @@ public class ProductController {
 
     @PostMapping("product/{productId}/upload/image")
     public RestResponse uploadImage(@PathVariable("productId") Long productId, @RequestParam("file") MultipartFile[] files){
-        return null;
+       List<File> fileList = new ArrayList<>();
+       try {
+           for (MultipartFile file : files) {
+               File localFile = File.createTempFile("temp",file.getOriginalFilename());
+               file.transferTo(localFile);
+               fileList.add(localFile);
+           }
+           Product product = productService.findById(productId).get();
+           List<String> fileURLs = s3Service.upload(productId,fileList);
+           product.setImageURL(fileURLs);
+
+           for (File file : fileList) {
+               file.delete();
+           }
+           return RestResponse.builder(  productService.update(productId,product)).message("Success").build();
+
+       } catch (IOException e) {
+           throw new RuntimeException(e);
+       }
     }
 
 
