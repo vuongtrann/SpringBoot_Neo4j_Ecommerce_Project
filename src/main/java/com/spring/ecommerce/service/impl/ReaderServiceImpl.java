@@ -52,21 +52,21 @@ public class ReaderServiceImpl implements ReaderService {
         try {
             for (String[] row : data) {
                 String categoryName = row[0];
-                Long parentId = Long.valueOf(row[1]);
-                String productName = row[2];
-                String imageUrl = row[3];
-                String description = row[4];
-                Double price = Double.valueOf(row[5]);
-                Double rate = Double.valueOf(row[6]);
-                String evalua = row[7];
-                Long catId = Long.valueOf(row[8]);
+//                Long parentId = Long.valueOf(row[1]);
+                String productName = row[1];
+                String imageUrl = row[2];
+                String description = row[3];
+                Double price = Double.valueOf(row[4]);
+                Double rate = Double.valueOf(row[5]);
+                String evalua = row[6];
+                Long catId = Long.valueOf(row[7]);
 
-                Category category = new Category(categoryName,parentId);
+                Category category = new Category(categoryName);
                 Category category1 = new Category(catId);
                 Product product = new Product(productName,imageUrl,description,price,category1);
 
-                categoryService.saveWithParentID(category);
-                productService.save(product);
+                categoryService.save(category);
+                //productService.save(product);
             }
         }catch (Exception e){
             e.printStackTrace();

@@ -34,9 +34,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product save(Product product) {
-        if (product.getCategory().getId() != null) {
-            Category category = categoryRepository.findById(product.getCategory().getId())
+    public Product save(Product product, Long categoryId) {
+        if (categoryId != null) {
+            Category category = categoryRepository.findById(categoryId)
                     .orElseThrow(()-> new RuntimeException("Category not found"));
             if(category != null) {
                 product.setCategory(category);
@@ -94,6 +94,13 @@ public class ProductServiceImpl implements ProductService {
         }else return null;
     }
 
+    @Override
+    public void viewCount(Long productId) {
+        Product product = productReprository.findById(productId).orElseThrow(()-> new RuntimeException("Product not found"));
+        int count = product.getViewCount()+1;
+        product.setViewCount(count);
+        productReprository.save(product);
+    }
 
 
 }
