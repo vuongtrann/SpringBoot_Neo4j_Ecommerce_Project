@@ -7,6 +7,7 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class Product {
     private String description;
     private Double price;
     private Double rating;
+    private int viewCount;
     @Relationship(type = "BELONG_TO", direction = Relationship.Direction.OUTGOING)
     private Category category;
 

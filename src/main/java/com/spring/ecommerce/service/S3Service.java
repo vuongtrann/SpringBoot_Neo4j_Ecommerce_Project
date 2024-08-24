@@ -2,6 +2,7 @@ package com.spring.ecommerce.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,8 +21,6 @@ public class S3Service {
 
     private final String bucketName;
 
-    private final Map<String, String> cache = new HashMap<>();
-
 
     public S3Service(AmazonS3 amazonS3, @Value("${aws.s3.bucket.name}") String bucketName) {
         this.amazonS3 = amazonS3;
@@ -32,18 +31,10 @@ public class S3Service {
     public List<String> upload(Long id, List<File> files) throws IOException {
         return files.stream().map(file -> {
             try {
-                // Kiểm tra cache trước
+
                 String fileKey = "product/" + id + "/" + file.getName();
-                if (cache.containsKey(fileKey)) {
-                    return cache.get(fileKey);
-                }
-
-                // Upload tệp lên S3
                 amazonS3.putObject(new PutObjectRequest(bucketName, fileKey, file).withCannedAcl(CannedAccessControlList.PublicRead));
-
-                // Lưu vào cache và trả về URL
                 String fileUrl = amazonS3.getUrl(bucketName, fileKey).toString();
-                cache.put(fileKey, fileUrl);
                 return fileUrl;
             } catch (Exception e) {
                 throw new RuntimeException("Error uploading file: " + file.getName(), e);
@@ -51,4 +42,16 @@ public class S3Service {
         }).collect(Collectors.toList());
     }
 
+    public void deleteImagesByUrls(List<String> imageUrls) {
+        for (String imageUrl : imageUrls) {
+            String objectKey = getFileUrl(imageUrl);
+            if (objectKey != null) {
+                amazonS3.deleteObject(new DeleteObjectRequest(bucketName, objectKey));
+            }
+        }
+    }
+    public String getFileUrl(String fileName) {
+        int index = fileName.indexOf(".com/")+5;
+        return fileName.substring(index);
+    }
 }

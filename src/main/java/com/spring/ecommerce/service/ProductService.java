@@ -11,6 +11,7 @@ public interface ProductService {
     public Product save(Product product, Long categoryId);
     public void delete(Long id);
     public Product update(Long id, Product product);
-
     public Product updateRating(Long productId);
+
+    public void viewCount(Long productId);
 }

@@ -15,7 +15,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v2")
@@ -41,6 +43,7 @@ public class ProductController {
     /**Get product by id*/
     @GetMapping("/product/{productId}")
     public RestResponse getProductById(@PathVariable("productId") Long productId) {
+        productService.viewCount(productId);
         return RestResponse.builder(productService.findById(productId)).message("Success").build();
     }
 
@@ -92,13 +95,16 @@ public class ProductController {
     public RestResponse uploadImage(@PathVariable("productId") Long productId, @RequestParam("file") MultipartFile[] files){
        List<File> fileList = new ArrayList<>();
        try {
+           Product product = productService.findById(productId).get();
            for (MultipartFile file : files) {
-               File localFile = File.createTempFile("temp",file.getOriginalFilename());
+               File localFile = File.createTempFile("image_",file.getOriginalFilename());
                file.transferTo(localFile);
                fileList.add(localFile);
            }
-           Product product = productService.findById(productId).get();
            List<String> fileURLs = s3Service.upload(productId,fileList);
+           List<String> oldFileURLs = product.getImageURL();
+           fileURLs.addAll(oldFileURLs);
+
            product.setImageURL(fileURLs);
 
            for (File file : fileList) {
@@ -147,4 +153,21 @@ public class ProductController {
             throw new RuntimeException(e);
         }
     }
+
+    @DeleteMapping("product/{productId}/delete/image")
+    public RestResponse deleteImage(@PathVariable("productId") Long productId, @RequestBody List<String> url) {
+        if (productService.findById(productId).isPresent()) {
+            Product product = productService.findById(productId).get();
+            List<String> imageURLs = product.getImageURL();
+            imageURLs.removeAll(url);
+            s3Service.deleteImagesByUrls(url);
+            product.setImageURL(imageURLs);
+
+            return RestResponse.builder(productService.update(productId,product)).message("Success").build();
+        }
+        else {
+            return RestResponse.builder().status(404).build();
+        }
+
+   }
 }
