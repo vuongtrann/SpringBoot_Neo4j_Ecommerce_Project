@@ -41,8 +41,6 @@ public class S3Service {
             try {
 
                 String fileKey = "product/" + id + "/" + file.getName().replaceAll("\\s+", "");
-
-//                String fileKey = "product/" + id + "/" + file.getName();
                 amazonS3.putObject(new PutObjectRequest(bucketName, fileKey, file).withCannedAcl(CannedAccessControlList.PublicRead));
 
 
