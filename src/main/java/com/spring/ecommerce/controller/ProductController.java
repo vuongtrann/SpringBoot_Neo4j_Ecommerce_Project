@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v2/product")
+@RequestMapping("/api/v2")
 public class ProductController {
     @Autowired
     private ProductService productService;
@@ -33,29 +33,26 @@ public class ProductController {
     }
 
     /**Get all product*/
-    @GetMapping("")
+    @GetMapping("/products")
     public RestResponse getAllProducts() {
         return RestResponse.builder(productService.findAll()).message("Success").build();
     }
 
     /**Get product by id*/
-    @GetMapping("/{productId}")
+    @GetMapping("/product/{productId}")
     public RestResponse getProductById(@PathVariable("productId") Long productId) {
         return RestResponse.builder(productService.findById(productId)).message("Success").build();
     }
 
     /**Add product*/
-//    @PostMapping("")
-//    public RestResponse addProduct(@RequestBody Product product) {
-//        return RestResponse.builder(productService.save(product)).message("Success").build();
-//    }
+    @PostMapping("category/{categoryId}/product")
+    public RestResponse addProduct(@PathVariable("categoryId") Long categoryId ,@RequestBody Product product) {
+        return RestResponse.builder(productService.save(product,categoryId)).message("Success").build();
+    }
 
     /**Update product*/
-    @PutMapping("/{productId}")
+    @PutMapping("product/{productId}")
     public RestResponse updateProduct(@PathVariable("productId") Long productId, @RequestBody Product product) {
-//        try{
-//
-//        }
         return RestResponse.builder(productService.update(productId, product)).message("Success").build();
     }
 
@@ -91,8 +88,14 @@ public class ProductController {
     }
 
 
+    @PostMapping("product/{productId}/upload/image")
+    public RestResponse uploadImage(@PathVariable("productId") Long productId, @RequestParam("file") MultipartFile[] files){
+        return null;
+    }
+
+
     @PostMapping("/upload")
-    public RestResponse uploadImage(@RequestParam("name") String name,@RequestParam("files") MultipartFile[] files,
+    public RestResponse uploadImage1(@RequestParam("name") String name,@RequestParam("files") MultipartFile[] files,
                                     @RequestParam("description") String description,  @RequestParam("price") Double price,
                                     @RequestParam("rating") Double rating, @RequestParam("categoryId") Long id) {
 
