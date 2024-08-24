@@ -160,7 +160,7 @@ public class ProductController {
             Product product = productService.findById(productId).get();
             List<String> imageURLs = product.getImageURL();
             imageURLs.removeAll(url);
-            s3Service.deleteImagesByUrls(url);
+//            s3Service.deleteImagesByUrls(url);
             product.setImageURL(imageURLs);
 
             return RestResponse.builder(productService.update(productId,product)).message("Success").build();

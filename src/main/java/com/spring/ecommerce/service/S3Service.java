@@ -10,7 +10,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.net.URLConnection;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +58,7 @@ public class S3Service {
 
 
     public String uploadBanner( MultipartFile file) throws IOException {
-        String contenttype = URLConnection.guessContentTypeFromName(file.getOriginalFilename());
+        String contenttype = URLConnection.guessContentTypeFromName(file.getOriginalFilename().replaceAll("\\s+", ""));
         metadata.setContentLength(file.getSize());
 
         if (contenttype != null){
@@ -64,7 +67,7 @@ public class S3Service {
         else {
             metadata.setContentType("application/octet-stream");
         }
-        String fileKey = "banner/" + file.getOriginalFilename();
+        String fileKey = "banner/" + file.getOriginalFilename().replaceAll("\\s+", "");
         try {
             amazonS3.putObject(new PutObjectRequest(bucketName, fileKey, file.getInputStream(), metadata));
             return amazonS3.getUrl(bucketName, fileKey).toString();
@@ -84,7 +87,10 @@ public class S3Service {
 
 
     public void remove(String url) {
-        amazonS3.deleteObject(bucketName, getFileKey(url));
+        String encodeFileKey = getFileKey(url);
+        String decodeFileKey = URLDecoder.decode(encodeFileKey, StandardCharsets.UTF_8);
+
+        amazonS3.deleteObject(bucketName, decodeFileKey);
 
     }
 }

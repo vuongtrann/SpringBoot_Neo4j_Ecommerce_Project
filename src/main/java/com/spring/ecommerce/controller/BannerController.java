@@ -38,6 +38,7 @@ public class BannerController {
 
 
 
+
     @PostMapping(value = "/add", consumes = "multipart/form-data")
     public RestResponse add (
             @RequestPart("file") List<MultipartFile> file) throws IOException {
