@@ -2,13 +2,16 @@ package com.spring.ecommerce.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
+import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +24,15 @@ public class S3Service {
 
     private final String bucketName;
 
+    ObjectMetadata metadata = new ObjectMetadata();
+
+
+
 
     public S3Service(AmazonS3 amazonS3, @Value("${aws.s3.bucket.name}") String bucketName) {
         this.amazonS3 = amazonS3;
         this.bucketName = bucketName;
+
     }
 
 
@@ -32,8 +40,12 @@ public class S3Service {
         return files.stream().map(file -> {
             try {
 
-                String fileKey = "product/" + id + "/" + file.getName();
+                String fileKey = "product/" + id + "/" + file.getName().replaceAll("\\s+", "");
+
+//                String fileKey = "product/" + id + "/" + file.getName();
                 amazonS3.putObject(new PutObjectRequest(bucketName, fileKey, file).withCannedAcl(CannedAccessControlList.PublicRead));
+
+
                 String fileUrl = amazonS3.getUrl(bucketName, fileKey).toString();
                 return fileUrl;
             } catch (Exception e) {
@@ -42,16 +54,39 @@ public class S3Service {
         }).collect(Collectors.toList());
     }
 
-    public void deleteImagesByUrls(List<String> imageUrls) {
-        for (String imageUrl : imageUrls) {
-            String objectKey = getFileUrl(imageUrl);
-            if (objectKey != null) {
-                amazonS3.deleteObject(new DeleteObjectRequest(bucketName, objectKey));
-            }
+
+
+    public String uploadBanner( MultipartFile file) throws IOException {
+        String contenttype = URLConnection.guessContentTypeFromName(file.getOriginalFilename());
+        metadata.setContentLength(file.getSize());
+
+        if (contenttype != null){
+            metadata.setContentType(contenttype);
         }
+        else {
+            metadata.setContentType("application/octet-stream");
+        }
+        String fileKey = "banner/" + file.getOriginalFilename();
+        try {
+            amazonS3.putObject(new PutObjectRequest(bucketName, fileKey, file.getInputStream(), metadata));
+            return amazonS3.getUrl(bucketName, fileKey).toString();
+        }catch (Exception e){
+            throw new RuntimeException("Error uploading file: " + file.getOriginalFilename(), e);
+        }
+
+}
+
+
+
+    public String getFileKey(String url){
+        int index = url.indexOf(".com/") + 5;
+
+        return url.substring(index);
     }
-    public String getFileUrl(String fileName) {
-        int index = fileName.indexOf(".com/")+5;
-        return fileName.substring(index);
+
+
+    public void remove(String url) {
+        amazonS3.deleteObject(bucketName, getFileKey(url));
+
     }
 }
