@@ -1,13 +1,11 @@
 package com.spring.ecommerce.persistence.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.springframework.data.neo4j.core.schema.GeneratedValue;
 import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +24,9 @@ public class Product {
     private String description;
     private Double price;
     private Double rating;
-    private int viewCount;
+    private int noOfView;
+    private int quantitySold;
+    private int remainingStock;
     @Relationship(type = "BELONG_TO", direction = Relationship.Direction.OUTGOING)
     private Category category;
 
