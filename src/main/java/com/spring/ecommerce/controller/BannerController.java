@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v2/banner")
@@ -25,13 +26,32 @@ public class BannerController {
 
     @GetMapping("")
     public RestResponse getAll() {
-        return RestResponse.builder(bannerService.findAll()).message("Success").build();
+        try{
+            List<String> bannersURL = bannerService.findAll();
+            return RestResponse.builder(bannersURL).message("Success").build();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RestResponse.builder().message("Error").build();
+        }
+
     }
 
 
     @GetMapping(value = "/{id}")
     public RestResponse getById(@PathVariable("id") Long id) {
-        return RestResponse.builder(bannerService.findById(id)).message("Success").build();
+        try {
+            Optional<Banners> banners = bannerService.findById(id);
+            if (banners.isPresent()) {
+                return RestResponse.builder(banners.get()).message("Success").build();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return RestResponse.builder().message("Error").build();
+
+        }
+
+        return RestResponse.builder(null).message("Error").build();
     }
 
 
@@ -42,8 +62,11 @@ public class BannerController {
     @PostMapping(value = "/add", consumes = "multipart/form-data")
     public RestResponse add (
             @RequestPart("file") List<MultipartFile> file) throws IOException {
-        bannerService.saveMultil(file);
-        return RestResponse.builder().message("Image added").build();
+        try{
+            bannerService.saveMultil(file);
+            return RestResponse.builder().message("Image added").build();
+        }
+
     }
 
 

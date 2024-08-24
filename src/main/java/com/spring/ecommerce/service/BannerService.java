@@ -11,8 +11,8 @@ import java.util.Optional;
 public interface BannerService {
     public List<String> findAll();
     public Optional<Banners> findById(Long id);
-    public Banners save(Banners banners);
-    public Banners saveMultil ( List<MultipartFile> files);
+    public String save(Banners banners);
+    public List<String> saveMultil ( List<MultipartFile> files);
     public Banners update(MultipartFile file, Long idBanner) throws IOException;
     public void delete(Long id);
 

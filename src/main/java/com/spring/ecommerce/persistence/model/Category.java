@@ -7,7 +7,7 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-@Node("Category1")
+@Node("Category")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,6 +19,8 @@ public class Category {
     private Long id;
     private String name;
     private Long parentID;
+    private int totalOfView;
+    private int totalOfQuantitySold;
 
     @Relationship(type = "HAS_PRODUCT",direction = Relationship.Direction.INCOMING)
     @JsonIgnore

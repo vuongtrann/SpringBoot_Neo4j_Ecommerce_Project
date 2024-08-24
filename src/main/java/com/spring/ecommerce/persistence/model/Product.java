@@ -9,7 +9,7 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 import java.util.Collections;
 import java.util.List;
 
-@Node("Product1")
+@Node("Product")
 @Getter
 @Setter
 @NoArgsConstructor

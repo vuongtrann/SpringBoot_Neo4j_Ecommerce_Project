@@ -42,14 +42,14 @@ public class BannerServiceImpl implements BannerService {
     }
 
     @Override
-    public Banners save(Banners banners) {
+    public String save(Banners banners) {
 
         return null;
     }
 
     @Override
-    public Banners saveMultil(List<MultipartFile> files) {
-        files.stream().map(file -> {
+    public List<String> saveMultil(List<MultipartFile> files) {
+       return files.stream().map(file -> {
             try {
                 String url = s3Service.uploadBanner(file);
                 Banners banners = new Banners();
@@ -63,7 +63,7 @@ public class BannerServiceImpl implements BannerService {
             }
         }).collect(Collectors.toList());
 
-        return null;
+
     }
 
     @Override
