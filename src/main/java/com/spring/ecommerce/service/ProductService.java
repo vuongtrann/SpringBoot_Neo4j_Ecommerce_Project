@@ -13,5 +13,5 @@ public interface ProductService {
     public Product update(Long id, Product product);
     public Product updateRating(Long productId);
 
-    public void viewCount(Long productId);
+    public void noOfView(Long productId);
 }
