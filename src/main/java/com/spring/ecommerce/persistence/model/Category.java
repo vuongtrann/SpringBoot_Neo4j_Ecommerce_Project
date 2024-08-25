@@ -27,11 +27,11 @@ public class Category {
     private Long parentID;
 
 
-//    @Relationship(type = "HAS_PRODUCT",direction = Relationship.Direction.INCOMING)
-//    @JsonIgnore
-//    private Product product;
+    @Relationship(type = "HAS_PRODUCT",direction = Relationship.Direction.INCOMING)
+    @JsonIgnore
+    private Product product;
 
-    @Relationship(type = "HAS_PARENT", direction = Relationship.Direction.OUTGOING)
+    @Relationship(type = "Has_parent", direction = Relationship.Direction.OUTGOING)
     @JsonIgnore
     private Category parent;
 
