@@ -7,6 +7,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.neo4j.core.schema.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Node("Category")
 @Getter
 @Setter
@@ -16,9 +19,6 @@ import org.springframework.data.neo4j.core.schema.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Category {
 
-
-//    @Property("id")
-//    @Generated
     @Id
     @GeneratedValue
     private Long id;
@@ -29,7 +29,7 @@ public class Category {
 
     @Relationship(type = "HAS_PRODUCT",direction = Relationship.Direction.INCOMING)
     @JsonIgnore
-    private Product product;
+    private Set<Product> products = new HashSet<>();
 
     @Relationship(type = "Has_parent", direction = Relationship.Direction.OUTGOING)
     @JsonIgnore
@@ -55,7 +55,14 @@ public class Category {
         this.name = name;
     }
 
-
+    public void addProduct(Product product) {
+        this.products.add(product);
+        product.getCategories().add(this);
+    }
+    public void removeProduct(Product product) {
+        this.products.remove(product);
+        product.getCategories().remove(this);
+    }
 
 
 
