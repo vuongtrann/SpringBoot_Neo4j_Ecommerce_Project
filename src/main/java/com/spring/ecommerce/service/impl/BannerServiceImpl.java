@@ -89,6 +89,25 @@ public class BannerServiceImpl implements BannerService {
         }catch (Exception e){
             e.printStackTrace();
         }
-
     }
+
+
+
+
+    @Override
+    public void  updateStatus(Long id)throws NullPointerException {
+        Banners banners = bannerRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
+        banners.setActive(!banners.isActive());
+        bannerRepository.save(banners);
+    }
+
+
+
+
+
+
+
+
+
+
 }

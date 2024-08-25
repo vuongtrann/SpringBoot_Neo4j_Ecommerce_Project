@@ -92,7 +92,7 @@ public class CategoryController {
 
 
     @GetMapping("/top")
-    public RestResponse getCategoryTop(@RequestParam(defaultValue = "10") int limit) throws NullPointerException {
+    public RestResponse getTopCategory(@RequestParam(defaultValue = "10") int limit) throws NullPointerException {
         return RestResponse.builder(categoryService.getTopCategory(limit)).message("Success").build();
 
     }
