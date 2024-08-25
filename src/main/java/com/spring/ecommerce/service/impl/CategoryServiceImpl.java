@@ -20,31 +20,34 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
-    private ProductReprository productReprository;
+
 
 
     @Override
-    public List<Category> getAllCategories() {
+    public List<Category> getAllCategories()throws NullPointerException {
         return categoryRepository.findAll();
     }
 
     @Override
     public Optional<Category> getCategoryById(Long id) {
+        if (id == null) {
+            throw new NullPointerException("Id is null");
+        }
         return categoryRepository.findById(id);
     }
 
     @Override
-    public Optional<Category> getCategoryByName(String name) {
+    public Optional<Category> getCategoryByName(String name)throws NullPointerException {
         return Optional.empty();
     }
 
     @Override
-    public Category save(Category category) {
+    public Category save(Category category) throws NullPointerException {
         return categoryRepository.save(category);
     }
 
     @Override
-    public Category saveWithParentID(Category category) {
+    public Category saveWithParentID(Category category) throws NullPointerException {
         Long parentID = category.getParentID();
         if (parentID != null) {
             Category parent = categoryRepository.findById(parentID)
@@ -75,7 +78,10 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.save(existingCategory);
     }
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(Long id)  {
+        if (id == null) {
+            throw new RuntimeException("Id is null");
+        }
         categoryRepository.deleteById(id);
     }
 
