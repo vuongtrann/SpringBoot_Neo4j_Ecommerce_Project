@@ -173,7 +173,7 @@ public class ProductController {
    @PutMapping ("/sold/{id}/product")
     public RestResponse soldProduct(@PathVariable("id") Long id) throws Exception {
         productService.soldOut(id);
-        categoryService.increaseView();
+//        categoryService.increaseView();
         return RestResponse.builder().message("Success").build();
    }
 
