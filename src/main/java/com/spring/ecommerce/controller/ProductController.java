@@ -3,6 +3,7 @@ package com.spring.ecommerce.controller;
 import com.spring.ecommerce.persistence.model.Category;
 import com.spring.ecommerce.persistence.model.Product;
 import com.spring.ecommerce.persistence.repository.ProductReprository;
+import com.spring.ecommerce.service.CategoryService;
 import com.spring.ecommerce.service.ProductService;
 import com.spring.ecommerce.service.S3Service;
 import com.spring.ecommerce.util.RestResponse;
@@ -14,10 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/v2")
@@ -26,8 +24,9 @@ public class ProductController {
     private ProductService productService;
     @Autowired
     private final S3Service s3Service;
+
     @Autowired
-    private ProductReprository productReprository;
+    private CategoryService categoryService;
 
     public ProductController(S3Service s3Service, ProductService productService) {
         this.s3Service = s3Service;
@@ -42,14 +41,13 @@ public class ProductController {
 
     /**Get product by id*/
     @GetMapping("/product/{productId}")
-    public RestResponse getProductById(@PathVariable("productId") Long productId) {
-        productService.viewCount(productId);
-        return RestResponse.builder(productService.findById(productId)).message("Success").build();
+    public RestResponse getProductById(@PathVariable("productId") Long productId) throws Exception {
+            return RestResponse.builder(productService.findById(productId)).message("Success").build();
     }
 
     /**Add product*/
     @PostMapping("category/{categoryId}/product")
-    public RestResponse addProduct(@PathVariable("categoryId") Long categoryId ,@RequestBody Product product) {
+    public RestResponse addProduct(@PathVariable("categoryId") Long categoryId ,@RequestBody Product product)  {
         return RestResponse.builder(productService.save(product,categoryId)).message("Success").build();
     }
 
@@ -170,4 +168,18 @@ public class ProductController {
         }
 
    }
+
+
+   @PutMapping ("/sold/{id}/product")
+    public RestResponse soldProduct(@PathVariable("id") Long id) throws Exception {
+        productService.soldOut(id);
+        categoryService.increaseView();
+        return RestResponse.builder().message("Success").build();
+   }
+
+
+
+
+
+
 }

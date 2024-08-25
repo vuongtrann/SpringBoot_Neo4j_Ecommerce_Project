@@ -6,6 +6,7 @@ import com.spring.ecommerce.persistence.model.Product;
 import com.spring.ecommerce.persistence.repository.CategoryRepository;
 import com.spring.ecommerce.persistence.repository.ReviewRepository;
 import com.spring.ecommerce.persistence.repository.ProductReprository;
+import com.spring.ecommerce.service.CategoryService;
 import com.spring.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,14 +24,23 @@ public class ProductServiceImpl implements ProductService {
     @Autowired
     private ReviewRepository evaluateRepository;
 
+    @Autowired
+    CategoryService categoryService;
+
+
     @Override
     public List<Product> findAll() {
         return productReprository.findAll();
     }
 
     @Override
-    public Optional<Product> findById(Long id) {
-        return productReprository.findById(id);
+    public Optional<Product> findById(Long id) throws NullPointerException {
+        Optional<Product> product = productReprository.findById(id);
+        if (product.isPresent()) {
+            viewCount(product.get());
+            return product;
+        }
+        return null;
     }
 
     @Override
@@ -95,12 +105,23 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void viewCount(Long productId) {
-        Product product = productReprository.findById(productId).orElseThrow(()-> new RuntimeException("Product not found"));
+    public void viewCount(Product product) {
         int count = product.getViewCount()+1;
         product.setViewCount(count);
         productReprository.save(product);
     }
+
+    @Override
+    public void soldOut(Long productId){
+        Optional<Product> productOptional = productReprository.findById(productId);
+        if (productOptional.isPresent()){
+            Product product = productOptional.get();
+            product.setQuantitySold(product.getQuantitySold()+1);
+            product.setRemainingQuantity(product.getRemainingQuantity()-1);
+            productReprository.save(product);
+        }
+    };
+
 
 
 }

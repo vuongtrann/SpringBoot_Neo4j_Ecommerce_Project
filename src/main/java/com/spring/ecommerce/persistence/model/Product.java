@@ -7,11 +7,12 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Node("Product1")
+@Node("Product")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -24,9 +25,13 @@ public class Product {
     private String name;
     private List<String> imageURL;
     private String description;
+    private double oldPrice;
     private Double price;
     private Double rating;
     private int viewCount;
+    private int quantitySold;
+    private int remainingQuantity;
+
     @Relationship(type = "BELONG_TO", direction = Relationship.Direction.OUTGOING)
     private Category category;
 
