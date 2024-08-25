@@ -1,5 +1,7 @@
 package com.spring.ecommerce.service.impl;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.ecommerce.persistence.model.Category;
 import com.spring.ecommerce.persistence.model.Product;
 import com.spring.ecommerce.persistence.repository.CategoryRepository;
@@ -9,9 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 @Service
 public class CategoryServiceImpl implements CategoryService {
+
+    ObjectMapper mapper = new ObjectMapper()
+            ;//.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
     @Autowired
     private CategoryRepository categoryRepository;
     private ProductReprository productReprository;
@@ -80,21 +87,13 @@ public class CategoryServiceImpl implements CategoryService {
 
 
     @Override
-    public void increaseView(Category category){
-        category.incrementTotalOfView();
-        categoryRepository.save(category);
-    };
-
-    @Override
-    public void increaseSold(Category category){
-        category.incrementTotalOfSold();
-        categoryRepository.save(category);
-    };
-
-
-    @Override
     public List<Category> getTopCategory(int limit) throws NullPointerException {
-        return categoryRepository.getTopCategory(limit);
+        List<Map<String, Object>> list = categoryRepository.getTopCategory(limit);
+        List<Category> categories = list.stream().map((m) -> {
+            Category category = mapper.convertValue(m, Category.class);
+            return category;
+        }).toList();
+        return categories;
     };
 
 

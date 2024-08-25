@@ -1,11 +1,11 @@
 package com.spring.ecommerce.persistence.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
-import org.springframework.data.neo4j.core.schema.Id;
-import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Relationship;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.neo4j.core.schema.*;
 
 @Node("Category")
 @Getter
@@ -13,14 +13,19 @@ import org.springframework.data.neo4j.core.schema.Relationship;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Category {
 
-    @Id @GeneratedValue
+
+//    @Property("id")
+//    @Generated
+    @Id
+    @GeneratedValue
     private Long id;
+
     private String name;
     private Long parentID;
-    private int totalOfView;
-    private int totalOfSold;
+
 
     @Relationship(type = "HAS_PRODUCT",direction = Relationship.Direction.INCOMING)
     @JsonIgnore
@@ -29,6 +34,12 @@ public class Category {
     @Relationship(type = "Has_parent", direction = Relationship.Direction.OUTGOING)
     @JsonIgnore
     private Category parent;
+
+    @Transient
+    private int noOfViews;
+
+    @Transient
+    private int productsSold;
 
 
     /** Constructor*/
@@ -45,12 +56,7 @@ public class Category {
     }
 
 
-    public void incrementTotalOfView() {
-         this.totalOfView++;
-    }
-    public void incrementTotalOfSold() {
-        this.totalOfSold++;
-    }
+
 
 
 }

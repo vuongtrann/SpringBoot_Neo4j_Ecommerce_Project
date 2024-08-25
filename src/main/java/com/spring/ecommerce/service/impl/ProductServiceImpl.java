@@ -108,7 +108,6 @@ public class ProductServiceImpl implements ProductService {
     public void viewCount(Product product) throws NullPointerException {
         int count = product.getViewCount()+1;
         product.setViewCount(count);
-        categoryService.increaseView(product.getCategory());
         productReprository.save(product);
     }
 
@@ -119,8 +118,6 @@ public class ProductServiceImpl implements ProductService {
             Product product = productOptional.get();
             product.setQuantitySold(product.getQuantitySold()+1);
             product.setRemainingQuantity(product.getRemainingQuantity()-1);
-            Category category = product.getCategory();
-            categoryService.increaseSold(category);
             productReprository.save(product);
         }
     };
