@@ -85,6 +85,18 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.save(category);
     };
 
+    @Override
+    public void increaseSold(Category category){
+        category.incrementTotalOfSold();
+        categoryRepository.save(category);
+    };
+
+
+    @Override
+    public List<Category> getTopCategory(int limit) throws NullPointerException {
+        return categoryRepository.getTopCategory(limit);
+    };
+
 
 
 

@@ -105,19 +105,22 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void viewCount(Product product) {
+    public void viewCount(Product product) throws NullPointerException {
         int count = product.getViewCount()+1;
         product.setViewCount(count);
+        categoryService.increaseView(product.getCategory());
         productReprository.save(product);
     }
 
     @Override
-    public void soldOut(Long productId){
+    public void soldOut(Long productId) throws NullPointerException {
         Optional<Product> productOptional = productReprository.findById(productId);
         if (productOptional.isPresent()){
             Product product = productOptional.get();
             product.setQuantitySold(product.getQuantitySold()+1);
             product.setRemainingQuantity(product.getRemainingQuantity()-1);
+            Category category = product.getCategory();
+            categoryService.increaseSold(category);
             productReprository.save(product);
         }
     };

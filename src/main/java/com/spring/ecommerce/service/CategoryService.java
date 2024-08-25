@@ -22,4 +22,7 @@ public interface CategoryService {
 
     public void increaseView(Category category);
 
+    public void increaseSold(Category category);
+
+    public List<Category> getTopCategory(int limit);
 }
