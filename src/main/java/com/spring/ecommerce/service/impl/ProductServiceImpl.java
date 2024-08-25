@@ -95,10 +95,10 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void noOfView(Long productId) {
+    public void viewCount(Long productId) {
         Product product = productReprository.findById(productId).orElseThrow(()-> new RuntimeException("Product not found"));
-        int count = product.getNoOfView()+1;
-        product.setNoOfView(count);
+        int count = product.getViewCount()+1;
+        product.setViewCount(count);
         productReprository.save(product);
     }
 

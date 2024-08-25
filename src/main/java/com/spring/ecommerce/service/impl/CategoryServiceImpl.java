@@ -58,16 +58,12 @@ public class CategoryServiceImpl implements CategoryService {
     public Category update(Long categoryId, Category category) {
         Category existingCategory = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new RuntimeException("Category not found"));
-
-        if (category.getName() != null && !category.getName().isEmpty()) {
+        if (category.getName() != null) {
             existingCategory.setName(category.getName());
-
             if (category.getParentID() != null) {
             Category parentCategory = categoryRepository.findById(category.getParentID())
                     .orElseThrow(() -> new RuntimeException("Parent category not found"));
             existingCategory.setParent(parentCategory);
-            }else {
-                existingCategory.setParent(null);
             }
         }
         return categoryRepository.save(existingCategory);
@@ -81,4 +77,15 @@ public class CategoryServiceImpl implements CategoryService {
     public Product addProduct(Long categoryId, Product newProduct) {
         return null;
     }
+
+
+    @Override
+    public void increaseView(Category category){
+        category.incrementTotalOfView();
+        categoryRepository.save(category);
+    };
+
+
+
+
 }

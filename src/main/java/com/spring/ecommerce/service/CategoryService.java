@@ -20,5 +20,6 @@ public interface CategoryService {
     public void deleteById(Long id);
     public Product addProduct(Long categoryId, Product newProduct);
 
+    public void increaseView(Category category);
 
 }
