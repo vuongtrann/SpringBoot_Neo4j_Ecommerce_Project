@@ -24,7 +24,7 @@ jobs:
         run: mvn clean install -DskipTests
 
       - name: Deploy to EB
-        uses: einaregilsson/beanstalk-deploy@v21
+        uses: vuongtrann/SpringBoot_Neo4j_Ecommerce_Project@v1
         with:
           aws_access_key: ${{secrets.AWS_ACCESS_KEY_ID}}
           aws_secret_key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
