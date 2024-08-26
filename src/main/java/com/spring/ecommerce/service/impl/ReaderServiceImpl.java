@@ -63,7 +63,7 @@ public class ReaderServiceImpl implements ReaderService {
 
                 Category category = new Category(categoryName);
                 Category category1 = new Category(catId);
-                Product product = new Product(productName,imageUrl,description,price,category1);
+                //Product product = new Product(productName,imageUrl,description,price,category1);
 
                 categoryService.save(category);
                 //productService.save(product);

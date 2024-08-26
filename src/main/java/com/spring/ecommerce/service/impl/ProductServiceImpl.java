@@ -49,16 +49,24 @@ public class ProductServiceImpl implements ProductService {
             Category category = categoryRepository.findById(categoryId)
                     .orElseThrow(()-> new RuntimeException("Category not found"));
             if(category != null) {
-                product.setCategory(category);
+                product.addCategory(category);
+                category.addProduct(product);
+                categoryRepository.save(category);
             }
         }
         return productReprository.save(product);
     }
 
+
+
     @Override
-    public Product update(Long id, Product product) {
-        Optional<Product> productOptional = productReprository.findById(id);
+    public Product update(Long categoryId, Product product) {
+        Optional<Product> productOptional = productReprository.findById(product.getId());
         if (productOptional.isPresent()) {
+
+            Category category = categoryRepository.findById(categoryId)
+                    .orElseThrow(()-> new RuntimeException("Category not found"));
+
             Product existingProduct = productOptional.get();
 
             existingProduct.setName(product.getName());
@@ -66,13 +74,16 @@ public class ProductServiceImpl implements ProductService {
             existingProduct.setDescription(product.getDescription());
             existingProduct.setPrice(product.getPrice());
 
-            if(product.getCategory().getId() != null) {
-                Category category = categoryRepository.findById(product.getCategory().getId())
-                        .orElseThrow(()-> new RuntimeException("Category not found"));
-                if(category != null) {
-                    existingProduct.setCategory(category);
-                }
-            }
+            product.addCategory(category);
+            category.addProduct(existingProduct);
+            categoryRepository.save(category);
+//            if(product.getCategories() != null) {
+//                Category category = categoryRepository.findById(product.getCategory().getId())
+//                        .orElseThrow(()-> new RuntimeException("Category not found"));
+//                if(category != null) {
+//                    existingProduct.setCategory(category);
+//                }
+//            }
             return productReprository.save(existingProduct);
         }else {
             throw new RuntimeException("Product not found");

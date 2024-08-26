@@ -51,11 +51,11 @@ public class ProductController {
         return RestResponse.builder(productService.save(product,categoryId)).message("Success").build();
     }
 
-    /**Update product*/
-    @PutMapping("product/{productId}")
-    public RestResponse updateProduct(@PathVariable("productId") Long productId, @RequestBody Product product) {
-        return RestResponse.builder(productService.update(productId, product)).message("Success").build();
-    }
+//    /**Update product*/
+//    @PutMapping("{cat}/product/{productId}")
+//    public RestResponse updateProduct(@PathVariable("productId") Long productId, @RequestBody Product product) {
+//        return RestResponse.builder(productService.update(productId, product)).message("Success").build();
+//    }
 
 //    @DeleteMapping("/{productId}")
 //    public ResponseEntity <String> deleteProduct(@PathVariable Long productId){

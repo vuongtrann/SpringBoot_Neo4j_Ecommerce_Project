@@ -27,7 +27,7 @@ public class Category {
     private Long parentID;
 
 
-    @Relationship(type = "HAS_PRODUCT",direction = Relationship.Direction.INCOMING)
+    @Relationship(type = "HAS_PRODUCTS",direction = Relationship.Direction.OUTGOING)
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
