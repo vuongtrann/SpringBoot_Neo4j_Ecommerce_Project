@@ -60,8 +60,8 @@ public class ProductServiceImpl implements ProductService {
 
 
     @Override
-    public Product update(Long categoryId, Product product) {
-        Optional<Product> productOptional = productReprository.findById(product.getId());
+    public Product update(Long categoryId, Long productId, Product product) {
+        Optional<Product> productOptional = productReprository.findById(productId);
         if (productOptional.isPresent()) {
 
             Category category = categoryRepository.findById(categoryId)

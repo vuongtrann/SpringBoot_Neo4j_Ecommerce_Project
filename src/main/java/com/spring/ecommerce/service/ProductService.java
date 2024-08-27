@@ -10,7 +10,7 @@ public interface ProductService {
     public Optional<Product> findById(Long id);
     public Product save(Product product, Long categoryId);
     public void delete(Long id);
-    public Product update(Long id, Product product);
+    public Product update(Long categorId, Long productId, Product product);
     public Product updateRating(Long productId);
 
     public void viewCount(Product product);
