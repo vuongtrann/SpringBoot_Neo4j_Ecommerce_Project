@@ -1,5 +1,6 @@
 package com.spring.ecommerce.service.impl;
 
+import com.spring.ecommerce.persistence.dto.ProductForm;
 import com.spring.ecommerce.persistence.model.Category;
 import com.spring.ecommerce.persistence.model.Review;
 import com.spring.ecommerce.persistence.model.Product;
@@ -11,8 +12,9 @@ import com.spring.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
+
 @Service
 public class ProductServiceImpl implements ProductService {
     @Autowired
@@ -44,51 +46,49 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product save(Product product, Long categoryId) {
-        if (categoryId != null) {
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(()-> new RuntimeException("Category not found"));
-            if(category != null) {
-                product.addCategory(category);
-                category.addProduct(product);
-                categoryRepository.save(category);
-            }
-        }
-        return productReprository.save(product);
+    public Product save(Product product) {
+      return productReprository.save(product);
     }
-
-
 
     @Override
-    public Product update(Long categoryId, Long productId, Product product) {
-        Optional<Product> productOptional = productReprository.findById(productId);
-        if (productOptional.isPresent()) {
+    public Product add(ProductForm form) {
+        List<Category> items = form.getCategories().stream()
+                .map( item -> {
+                    Optional<Category> opt = categoryService.findById(item);
+                    if (opt.isPresent()) {
+                        Category category = opt.get();
+                        return category;
+                    }
+                    return null;
+                }).toList();
 
-            Category category = categoryRepository.findById(categoryId)
-                    .orElseThrow(()-> new RuntimeException("Category not found"));
-
-            Product existingProduct = productOptional.get();
-
-            existingProduct.setName(product.getName());
-            existingProduct.setImageURL(product.getImageURL());
-            existingProduct.setDescription(product.getDescription());
-            existingProduct.setPrice(product.getPrice());
-
-            product.addCategory(category);
-            category.addProduct(existingProduct);
-            categoryRepository.save(category);
-//            if(product.getCategories() != null) {
-//                Category category = categoryRepository.findById(product.getCategory().getId())
-//                        .orElseThrow(()-> new RuntimeException("Category not found"));
-//                if(category != null) {
-//                    existingProduct.setCategory(category);
-//                }
-//            }
-            return productReprository.save(existingProduct);
-        }else {
-            throw new RuntimeException("Product not found");
-        }
+        Product product = new Product(form.getName(), form.getDescription(),form.getPrice(),items);
+        product = save(product);
+        return product;
     }
+
+    @Override
+    public Product update(ProductForm form, Long productId){
+        Product existingProduct = productReprository.findById(productId).orElseThrow(()-> new RuntimeException("Product not found"));
+        List<Category> categories = form.getCategories().stream()
+                .map( item-> {
+                    Optional<Category> opt = categoryService.findById(item);
+                    if (opt.isPresent()) {
+                        Category category = opt.get();
+                        return category;
+                    }
+                    return null;
+                }).toList();
+
+        existingProduct.setName(form.getName());
+        existingProduct.setImageURL(form.getImageURL());
+        existingProduct.setDescription(form.getDescription());
+        existingProduct.setPrice(form.getPrice());
+        existingProduct.setOldPrice(form.getOldPrice());
+        existingProduct.setCategories(categories);
+        return save(existingProduct);
+    }
+
 
     @Override
     public void delete(Long id) {

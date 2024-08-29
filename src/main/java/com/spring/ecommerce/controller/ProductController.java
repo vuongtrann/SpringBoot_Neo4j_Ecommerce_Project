@@ -1,5 +1,6 @@
 package com.spring.ecommerce.controller;
 
+import com.spring.ecommerce.persistence.dto.ProductForm;
 import com.spring.ecommerce.persistence.model.Category;
 import com.spring.ecommerce.persistence.model.Product;
 import com.spring.ecommerce.persistence.repository.ProductReprository;
@@ -16,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v2")
@@ -46,16 +48,16 @@ public class ProductController {
     }
 
     /**Add product*/
-    @PostMapping("category/{categoryId}/product")
-    public RestResponse addProduct(@PathVariable("categoryId") Long categoryId ,@RequestBody Product product)  {
-        return RestResponse.builder(productService.save(product,categoryId)).message("Success").build();
+    @PostMapping("/product")
+    public RestResponse addProduct(@RequestBody ProductForm form)  {
+        Product product = productService.add(form);
+        return RestResponse.builder(product).message("Success").build();
     }
 
     /**Update product*/
-    @PutMapping("category/{categoryId}/product/{productId}")
-    public RestResponse updateProduct(@PathVariable("categoryId") Long categoryId,@PathVariable("productId") Long productId, @RequestBody Product product) {
-        productService.update(categoryId,productId, product);
-        return RestResponse.builder(product).message("Success").build();
+    @PutMapping("/product/{productId}")
+    public RestResponse updateProduct(@PathVariable("productId") Long productId, @RequestBody ProductForm form) {
+        return RestResponse.builder(productService.update(form,productId)).message("Success").build();
     }
 
     @DeleteMapping("/{productId}")
@@ -90,68 +92,69 @@ public class ProductController {
 //    }
 
 //
-//    @PostMapping("product/{productId}/upload/image")
-//    public RestResponse uploadImage(@PathVariable("productId") Long productId, @RequestParam("file") MultipartFile[] files){
-//       List<File> fileList = new ArrayList<>();
-//       try {
-//           Product product = productService.findById(productId).get();
-//           for (MultipartFile file : files) {
-//               File localFile = File.createTempFile("image_",file.getOriginalFilename());
-//               file.transferTo(localFile);
-//               fileList.add(localFile);
-//           }
-//           List<String> fileURLs = s3Service.upload(productId,fileList);
+    @PostMapping("product/{productId}/upload/image")
+    public RestResponse uploadImage(@PathVariable("productId") Long productId, @RequestParam("file") MultipartFile[] files){
+       List<File> fileList = new ArrayList<>();
+       try {
+           Product product = productService.findById(productId).orElseThrow(()->new RuntimeException("Product with id : " + productId + " not found"));
+           for (MultipartFile file : files) {
+               File localFile = File.createTempFile("image_",file.getOriginalFilename());
+               file.transferTo(localFile);
+               fileList.add(localFile);
+           }
+           List<String> fileURLs = s3Service.upload(productId,fileList);
 //           List<String> oldFileURLs = product.getImageURL();
-//           fileURLs.addAll(oldFileURLs);
-//
-//           product.setImageURL(fileURLs);
-//
-//           for (File file : fileList) {
-//               file.delete();
-//           }
-//           return RestResponse.builder(  productService.update(productId,product)).message("Success").build();
-//
-//       } catch (IOException e) {
-//           throw new RuntimeException(e);
-//       }
-//    }
+//           oldFileURLs.addAll(fileURLs);
 
+           product.setImageURL(fileURLs);
 
-    @PostMapping("/upload")
-    public RestResponse uploadImage1(@RequestParam("name") String name,@RequestParam("files") MultipartFile[] files,
-                                    @RequestParam("description") String description,  @RequestParam("price") Double price,
-                                    @RequestParam("rating") Double rating, @RequestParam("categoryId") Long id) {
+           for (File file : fileList) {
+               file.delete();
+           }
 
-        List<File> fileList = new ArrayList<>();
-        try {
-            for (MultipartFile file : files) {
-                File localFile = File.createTempFile("temp",file.getOriginalFilename());
-                file.transferTo(localFile);
-                fileList.add(localFile);
-            }
+           return RestResponse.builder( productService.save(product)).message("Success").build();
 
-            Product product = new Product();
-            product.setName(name);
-            product.setDescription(description);
-            product.setPrice(price);
-            product.setRating(rating);
-
-            Product savedProduct = productService.save(product,id);
-            List<String> fileUrls = s3Service.upload(savedProduct.getId(),fileList);
-
-            savedProduct.setImageURL(fileUrls);
-            productService.save(savedProduct,id);
-
-
-            for (File file : fileList) {
-                file.delete();
-            }
-
-            return RestResponse.builder(savedProduct).message("Success").build();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+       } catch (IOException e) {
+           throw new RuntimeException(e);
+       }
     }
+
+
+//    @PostMapping("/upload")
+//    public RestResponse uploadImage1(@RequestParam("name") String name,@RequestParam("files") MultipartFile[] files,
+//                                    @RequestParam("description") String description,  @RequestParam("price") Double price,
+//                                    @RequestParam("rating") Double rating, @RequestParam("categoryId") Long id) {
+//
+//        List<File> fileList = new ArrayList<>();
+//        try {
+//            for (MultipartFile file : files) {
+//                File localFile = File.createTempFile("temp",file.getOriginalFilename());
+//                file.transferTo(localFile);
+//                fileList.add(localFile);
+//            }
+//
+//            Product product = new Product();
+//            product.setName(name);
+//            product.setDescription(description);
+//            product.setPrice(price);
+//            product.setRating(rating);
+//
+//            Product savedProduct = productService.save(product,id);
+//            List<String> fileUrls = s3Service.upload(savedProduct.getId(),fileList);
+//
+//            savedProduct.setImageURL(fileUrls);
+//            productService.save(savedProduct,id);
+//
+//
+//            for (File file : fileList) {
+//                file.delete();
+//            }
+//
+//            return RestResponse.builder(savedProduct).message("Success").build();
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
 //    @DeleteMapping("product/{productId}/delete/image")
 //    public RestResponse deleteImage(@PathVariable("productId") Long productId, @RequestBody List<String> url) {

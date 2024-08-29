@@ -32,16 +32,17 @@ public class Product {
     private String brandName;
 
     @Relationship(type = "BELONGS_TO", direction = Relationship.Direction.OUTGOING)
-    private Set<Category> categories = new HashSet<>();
+    private List<Category> categories = new ArrayList<>();
 
-    public void addCategory(Category category) {
-        this.categories.add(category);
-        category.getProducts().add(this);
-    }
-    public void removeCategory(Category category) {
-        this.categories.remove(category);
-        category.getProducts().remove(this);
-    }
+
+//    public void addCategory(Category category) {
+//        this.categories.add(category);
+//        category.getProducts().add(this);
+//    }
+//    public void removeCategory(Category category) {
+//        this.categories.remove(category);
+//        category.getProducts().remove(this);
+//    }
 
 //    public Product(String name, String imageURL, String description, Double price) {
 //        this.name = name;
@@ -50,11 +51,10 @@ public class Product {
 //        this.price = price;
 //    }
 //
-//    public Product(String name, String imageURL, String description, Double price, Category category) {
-//        this.name = name;
-//        this.imageURL = Collections.singletonList(imageURL);
-//        this.description = description;
-//        this.price = price;
-//        this.category = category;
-//    }
+    public Product(String name, String description, Double price, List<Category> categories) {
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.categories = categories;
+    }
 }

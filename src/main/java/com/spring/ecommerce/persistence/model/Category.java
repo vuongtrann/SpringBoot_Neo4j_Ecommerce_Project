@@ -7,7 +7,9 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.neo4j.core.schema.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Node("Category")
@@ -29,7 +31,7 @@ public class Category {
 
     @Relationship(type = "HAS_PRODUCTS",direction = Relationship.Direction.OUTGOING)
     @JsonIgnore
-    private Set<Product> products = new HashSet<>();
+    private List<Product> products = new ArrayList<>();
 
     @Relationship(type = "Has_parent", direction = Relationship.Direction.OUTGOING)
     @JsonIgnore

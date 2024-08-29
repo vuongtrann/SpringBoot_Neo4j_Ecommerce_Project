@@ -36,7 +36,7 @@ public class CategoryController {
     @GetMapping("/{categoryId}")
     public RestResponse getCategoryById(@PathVariable Long categoryId) {
         try {
-            Optional<Category> category = categoryService.getCategoryById(categoryId);
+            Optional<Category> category = categoryService.findById(categoryId);
             return RestResponse.builder(category).message("Success").build();
         }catch (Exception e) {
             return RestResponse.builder(null).message(e.getMessage()).build();

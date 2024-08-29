@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface CategoryService {
 
     public List<Category> getAllCategories();
-    public Optional<Category> getCategoryById(Long id);
+    public Optional<Category> findById(Long id);
     public Optional<Category> getCategoryByName(String name);
     public Category save(Category category);
     public Category saveWithParentID(Category category);

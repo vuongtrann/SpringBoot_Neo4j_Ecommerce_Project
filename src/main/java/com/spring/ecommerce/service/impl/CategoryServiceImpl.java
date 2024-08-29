@@ -29,10 +29,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Optional<Category> getCategoryById(Long id) {
-        if (id == null) {
-            throw new NullPointerException("Id is null");
-        }
+    public Optional<Category> findById(Long id) {
         return categoryRepository.findById(id);
     }
 
