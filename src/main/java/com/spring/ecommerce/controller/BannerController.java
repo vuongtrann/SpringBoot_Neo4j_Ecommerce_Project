@@ -65,6 +65,8 @@ public class BannerController {
         try{
             bannerService.saveMultil(file);
             return RestResponse.builder().message("Image added").build();
+        }catch (Exception e) {
+            return RestResponse.builder().message("Error").build();
         }
 
     }
