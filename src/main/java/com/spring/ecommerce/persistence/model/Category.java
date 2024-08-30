@@ -31,11 +31,11 @@ public class Category {
 
     @Relationship(type = "HAS_PRODUCTS",direction = Relationship.Direction.OUTGOING)
     @JsonIgnore
-    private List<Product> products = new ArrayList<>();
+    private Set<Product> products = new HashSet<>();
 
     @Relationship(type = "Has_parent", direction = Relationship.Direction.OUTGOING)
     @JsonIgnore
-    private Category parent;
+    private Category categories;
 
     @Transient
     private int noOfViews;
@@ -43,7 +43,10 @@ public class Category {
     @Transient
     private int productsSold;
 
-
+    public Category(String name, Category categories) {
+        this.name = name;
+        this.categories = categories;
+    }
     /** Constructor*/
     public Category(String name, Long parentID) {
         this.name = name;

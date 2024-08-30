@@ -61,11 +61,11 @@ public class ReaderServiceImpl implements ReaderService {
                 String evalua = row[6];
                 Long catId = Long.valueOf(row[7]);
 
-                Category category = new Category(categoryName);
-                Category category1 = new Category(catId);
+                //Category category = new Category(categoryName);
+                //Category category1 = new Category(catId);
                 //Product product = new Product(productName,imageUrl,description,price,category1);
 
-                categoryService.save(category);
+                //categoryService.save(category);
                 //productService.save(product);
             }
         }catch (Exception e){

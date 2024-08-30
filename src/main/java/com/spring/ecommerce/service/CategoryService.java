@@ -1,5 +1,7 @@
 package com.spring.ecommerce.service;
 
+import com.spring.ecommerce.persistence.dto.CategoryForm;
+import com.spring.ecommerce.persistence.dto.ProductForm;
 import com.spring.ecommerce.persistence.model.Category;
 import com.spring.ecommerce.persistence.model.Product;
 import org.springframework.stereotype.Service;
@@ -13,7 +15,8 @@ public interface CategoryService {
     public Optional<Category> findById(Long id);
     public Optional<Category> getCategoryByName(String name);
     public Category save(Category category);
-    public Category saveWithParentID(Category category);
+    public Category addParent(Category category);
+
 
     public List<Category> saveAll(List<Category> categories);
     public Category update(Long catId ,Category category);

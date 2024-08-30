@@ -1,6 +1,7 @@
 package com.spring.ecommerce.controller;
 
 
+import com.spring.ecommerce.persistence.dto.CategoryForm;
 import com.spring.ecommerce.persistence.model.Category;
 import com.spring.ecommerce.service.CategoryService;
 import com.spring.ecommerce.service.impl.CategoryServiceImpl;
@@ -59,7 +60,7 @@ public class CategoryController {
     @PostMapping("/parent")
     public RestResponse addCategoryWithParent( @RequestBody Category category) {
         try {
-            Category saveCategory = categoryService.saveWithParentID( category);
+            Category saveCategory = categoryService.addParent( category);
             return RestResponse.builder(saveCategory).message("Success").build();
         }catch (Exception e) {
             return RestResponse.builder(null).message(e.getMessage()).build();

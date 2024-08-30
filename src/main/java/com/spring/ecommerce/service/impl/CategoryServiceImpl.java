@@ -1,11 +1,11 @@
 package com.spring.ecommerce.service.impl;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.ecommerce.persistence.dto.CategoryForm;
+import com.spring.ecommerce.persistence.dto.ProductForm;
 import com.spring.ecommerce.persistence.model.Category;
 import com.spring.ecommerce.persistence.model.Product;
 import com.spring.ecommerce.persistence.repository.CategoryRepository;
-import com.spring.ecommerce.persistence.repository.ProductReprository;
 import com.spring.ecommerce.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,13 +43,29 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.save(category);
     }
 
+//    @Override
+//    public Category addParent(CategoryForm form) {
+//        List<Category> items = form.getCategories().stream()
+//                .map(item -> {
+//                    Optional<Category> categoryOptional = categoryRepository.findById(item);
+//                    if (categoryOptional.isPresent()) {
+//                        Category category = categoryOptional.get();
+//                        return category;
+//                    }
+//                    return null;
+//                }).toList();
+//        Category category = new Category(form.getName(),items);
+//        category = save(category);
+//        return category;
+//    }
+
     @Override
-    public Category saveWithParentID(Category category) throws NullPointerException {
+    public Category addParent(Category category) {
         Long parentID = category.getParentID();
         if (parentID != null) {
             Category parent = categoryRepository.findById(parentID)
                     .orElseThrow(()-> new RuntimeException("Parent category not found"));
-            category.setParent(parent);
+            category.setCategories(parent);
         }
         return categoryRepository.save(category);
     }
@@ -59,21 +75,26 @@ public class CategoryServiceImpl implements CategoryService {
         return List.of();
     }
 
-
     @Override
-    public Category update(Long categoryId, Category category) {
-        Category existingCategory = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new RuntimeException("Category not found"));
-        if (category.getName() != null) {
-            existingCategory.setName(category.getName());
-            if (category.getParentID() != null) {
-            Category parentCategory = categoryRepository.findById(category.getParentID())
-                    .orElseThrow(() -> new RuntimeException("Parent category not found"));
-            existingCategory.setParent(parentCategory);
-            }
-        }
-        return categoryRepository.save(existingCategory);
+    public Category update(Long catId, Category category) {
+        return null;
     }
+
+
+    //    @Override
+//    public Category update(Long categoryId, Category category) {
+//        Category existingCategory = categoryRepository.findById(categoryId)
+//                .orElseThrow(() -> new RuntimeException("Category not found"));
+//        if (category.getName() != null) {
+//            existingCategory.setName(category.getName());
+//            if (category.getParentID() != null) {
+//            Category parentCategory = categoryRepository.findById(category.getParentID())
+//                    .orElseThrow(() -> new RuntimeException("Parent category not found"));
+//            existingCategory.setParent(parentCategory);
+//            }
+//        }
+//        return categoryRepository.save(existingCategory);
+//    }
     @Override
     public void deleteById(Long id)  {
         if (id == null) {
