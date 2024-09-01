@@ -10,6 +10,7 @@ import java.util.Set;
 public interface ProductService {
     public List<Product> findAll();
     public Optional<Product> findById(Long id);
+    public List<Product> findByNameProduct(String name);
     public Product save(Product product);
     public void delete(Long id);
     public Product add(ProductForm form);

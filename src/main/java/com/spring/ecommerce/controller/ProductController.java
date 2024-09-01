@@ -17,10 +17,9 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/api/v2")
+@RequestMapping("/api/v2/products")
 public class ProductController {
     @Autowired
     private ProductService productService;
@@ -35,45 +34,130 @@ public class ProductController {
         this.productService = productService;
     }
 
+    /** CREATE */
+
+    /**Add product*/
+    @PostMapping("")
+    public ResponseEntity addProduct(@RequestBody ProductForm form)  {
+        if (form.getName().length()>120 || form.getName().length()<5){
+            return new ResponseEntity<>("Product name at least 5 and at most 120 characters !",HttpStatus.BAD_REQUEST);
+        }else {
+            Product product = productService.add(form);
+            return new ResponseEntity<>(product,HttpStatus.CREATED);
+        }
+    }
+
+    /**Upload Image*/
+    @PostMapping("/{productId}/upload/image")
+    public ResponseEntity uploadImage(@PathVariable("productId") Long productId, @RequestParam("file") MultipartFile[] files){
+        List<File> fileList = new ArrayList<>();
+        try {
+            Product product = productService.findById(productId).orElseThrow(()->new RuntimeException("Product with id : " + productId + " not found"));
+            for (MultipartFile file : files) {
+                File localFile = File.createTempFile("image_",file.getOriginalFilename());
+                file.transferTo(localFile);
+                fileList.add(localFile);
+            }
+            List<String> fileURLs = s3Service.upload(productId,fileList);
+            List<String> oldFileURLs = product.getImageURL();
+            if (oldFileURLs != null) {
+                fileURLs.addAll(oldFileURLs);
+                product.setImageURL(fileURLs);
+                product.setPrimaryImageURL(fileURLs.get(0));
+            }else {
+                product.setImageURL(fileURLs);
+                product.setPrimaryImageURL(fileURLs.get(0));
+            }
+
+            for (File file : fileList) {
+                file.delete();
+            }
+            return new ResponseEntity<>(productService.save(product), HttpStatus.CREATED);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /** READ */
+
     /**Get all product*/
-    @GetMapping("/products")
-    public RestResponse getAllProducts() {
-        return RestResponse.builder(productService.findAll()).message("Success").build();
+    @GetMapping("")
+    public ResponseEntity<List<Product>> getAllProducts() {
+        if (productService.findAll().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }else{
+            return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
+        }
     }
 
     /**Get product by id*/
-    @GetMapping("/product/{productId}")
-    public RestResponse getProductById(@PathVariable("productId") Long productId) throws Exception {
-            return RestResponse.builder(productService.findById(productId)).message("Success").build();
-    }
-
-    /**Add product*/
-    @PostMapping("/product")
-    public RestResponse addProduct(@RequestBody ProductForm form)  {
-        Product product = productService.add(form);
-        return RestResponse.builder(product).message("Success").build();
-    }
-
-    /**Update product*/
-    @PutMapping("/product/{productId}")
-    public RestResponse updateProduct(@PathVariable("productId") Long productId, @RequestBody ProductForm form) {
-        return RestResponse.builder(productService.update(form,productId)).message("Success").build();
-    }
-
-    @DeleteMapping("/{productId}")
-    public ResponseEntity <String> deleteProduct(@PathVariable Long productId){
-        try {
-            if (productService.findById(productId).isPresent()){
-                productService.delete(productId);
-                return ResponseEntity.status(HttpStatus.OK).body("Deleted product by id : " + productId);
-            }else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product with id : " + productId + " not found");
-            }
-        }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    @GetMapping("/{productId}")
+    public ResponseEntity<Product> getProductById(@PathVariable("productId") Long productId) {
+        if (!productService.findById(productId).isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }else {
+            return new ResponseEntity<>(productService.findById(productId).get(), HttpStatus.OK);
         }
 
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Product>> getProductByName(@RequestParam("name") String name) {
+        if (productService.findAll().isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }else {
+            return new ResponseEntity<>(productService.findByNameProduct(name),HttpStatus.OK);
+        }
+    }
+
+
+    /** UPDATE */
+
+    /**Update product*/
+    @PutMapping("/{productId}")
+    public ResponseEntity updateProduct(@PathVariable("productId") Long productId, @RequestBody ProductForm form) {
+        return new ResponseEntity<>(productService.update(form,productId),HttpStatus.OK);
+    }
+
+    @PutMapping ("/sold/{id}/product")
+    public RestResponse soldProduct(@PathVariable("id") Long id) throws Exception {
+        productService.soldOut(id);
+        return RestResponse.builder().message("Success").build();
+    }
+
+    /** DELETE */
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity <String> deleteProduct(@PathVariable Long productId){
+        if (productService.findById(productId).isPresent()){
+            productService.delete(productId);
+            return ResponseEntity.status(HttpStatus.OK).body("Deleted product by id : " + productId);
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product with id : " + productId + " not found");
+        }
+    }
+
+
+    @DeleteMapping("/{productId}/delete/image")
+    public ResponseEntity deleteImage(@PathVariable("productId") Long productId, @RequestBody List<String> url) {
+        if (productService.findById(productId).isPresent()) {
+            Product product = productService.findById(productId).get();
+            List<String> imageURLs = product.getImageURL();
+            imageURLs.removeAll(url);
+            s3Service.deleteImagesByUrls(url);
+            product.setImageURL(imageURLs);
+
+            return new ResponseEntity<>(productService.save(product),HttpStatus.OK);
+        }
+        else {
+            return new ResponseEntity<>("Product with id : " + productId + " not found", HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+
+
+
 
 //    /**Delete product by id*/
 //    @DeleteMapping("/product/{productId}")
@@ -91,34 +175,7 @@ public class ProductController {
 //    }
 
 
-    /**Upload Image*/
-    @PostMapping("/product/{productId}/upload/image")
-    public RestResponse uploadImage(@PathVariable("productId") Long productId, @RequestParam("file") MultipartFile[] files){
-       List<File> fileList = new ArrayList<>();
-       try {
-           Product product = productService.findById(productId).orElseThrow(()->new RuntimeException("Product with id : " + productId + " not found"));
-           for (MultipartFile file : files) {
-               File localFile = File.createTempFile("image_",file.getOriginalFilename());
-               file.transferTo(localFile);
-               fileList.add(localFile);
-           }
-           List<String> fileURLs = s3Service.upload(productId,fileList);
-           List<String> oldFileURLs = product.getImageURL();
-           if (oldFileURLs != null) {
-               fileURLs.addAll(oldFileURLs);
-               product.setImageURL(fileURLs);
-           }else {
-               product.setImageURL(fileURLs);
-           }
 
-           for (File file : fileList) {
-               file.delete();
-           }
-           return RestResponse.builder( productService.save(product)).message("Success").build();
-       } catch (IOException e) {
-           throw new RuntimeException(e);
-       }
-    }
 
 
 //    @PostMapping("/upload")
@@ -156,36 +213,5 @@ public class ProductController {
 //            throw new RuntimeException(e);
 //        }
 //    }
-
-
-
-    @DeleteMapping("/product/{productId}/delete/image")
-    public RestResponse deleteImage(@PathVariable("productId") Long productId, @RequestBody List<String> url) {
-        if (productService.findById(productId).isPresent()) {
-            Product product = productService.findById(productId).get();
-            List<String> imageURLs = product.getImageURL();
-            imageURLs.removeAll(url);
-            s3Service.deleteImagesByUrls(url);
-            product.setImageURL(imageURLs);
-
-            return RestResponse.builder(productService.save(product)).message("Success").build();
-        }
-        else {
-            return RestResponse.builder().status(404).build();
-        }
-
-   }
-
-
-   @PutMapping ("/sold/{id}/product")
-    public RestResponse soldProduct(@PathVariable("id") Long id) throws Exception {
-        productService.soldOut(id);
-        return RestResponse.builder().message("Success").build();
-   }
-
-
-
-
-
 
 }

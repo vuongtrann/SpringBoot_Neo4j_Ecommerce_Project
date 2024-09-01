@@ -29,6 +29,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<Category> findByCategoryName(String categoryName) {
+        List<Category> categories = categoryRepository.findByCategoryName(categoryName);
+        if (!categories.isEmpty()) {
+            return categories;
+        }
+        return null;
+    }
+
+    @Override
     public Optional<Category> findById(Long id) {
         return categoryRepository.findById(id);
     }

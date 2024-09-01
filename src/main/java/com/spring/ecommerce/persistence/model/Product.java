@@ -8,6 +8,8 @@ import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 @Node("Product")
@@ -22,14 +24,20 @@ public class Product {
     private Long id;
     private String name;
     private List<String> imageURL;
+    private String primaryImageURL;
     private String description;
     private double oldPrice;
     private Double price;
     private Double rating;
     private int viewCount;
+    private int quantity;
+    private String SKU;
     private int quantitySold;
     private int remainingQuantity;
     private String brandName;
+
+    private LocalDateTime createAt;
+    private LocalDateTime updateAt;
 
     @Relationship(type = "BELONGS_TO", direction = Relationship.Direction.OUTGOING)
     private List<Category> categories = new ArrayList<>();

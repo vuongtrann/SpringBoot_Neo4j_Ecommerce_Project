@@ -17,12 +17,12 @@ public interface CategoryService {
     public Category save(Category category);
     public Category addParent(Category category);
 
-
     public List<Category> saveAll(List<Category> categories);
     public Category update(Long catId ,Category category);
     public void deleteById(Long id);
     public Product addProduct(Long categoryId, Product newProduct);
 
 
+    public List<Category> findByCategoryName(String name);
     public List<Category> getTopCategory(int limit);
 }

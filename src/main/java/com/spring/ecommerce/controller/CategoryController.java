@@ -33,6 +33,15 @@ public class CategoryController {
 
     }
 
+    @GetMapping("/search")
+    public RestResponse getAllCategoriesByName(@RequestParam("name") String name) throws Exception{
+        try {
+            return RestResponse.builder(categoryService.findByCategoryName(name)).message("Success").build();
+        }catch (Exception e){
+            return RestResponse.builder(null).message(e.getMessage()).build();
+        }
+    }
+
     /**Get category by id*/
     @GetMapping("/{categoryId}")
     public RestResponse getCategoryById(@PathVariable Long categoryId) {

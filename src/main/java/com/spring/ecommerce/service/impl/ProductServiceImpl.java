@@ -12,6 +12,7 @@ import com.spring.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -46,6 +47,12 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> findByNameProduct(String name) {
+        return productReprository.findByNameProduct(name);
+    }
+
+
+    @Override
     public Product save(Product product) {
       return productReprository.save(product);
     }
@@ -63,6 +70,7 @@ public class ProductServiceImpl implements ProductService {
                 }).toList();
 
         Product product = new Product(form.getName(), form.getDescription(),form.getPrice(),items);
+        product.setCreateAt(LocalDateTime.now());
         product = save(product);
         return product;
     }
@@ -86,6 +94,7 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setPrice(form.getPrice());
         existingProduct.setOldPrice(form.getOldPrice());
         existingProduct.setCategories(categories);
+        existingProduct.setUpdateAt(LocalDateTime.now());
         return save(existingProduct);
     }
 

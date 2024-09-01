@@ -20,4 +20,7 @@ public interface CategoryRepository extends Neo4jRepository<Category, Long> {
             "LIMIT 10")
     List<Map<String, Object>> getTopCategory(@Param("limit") int limit);
 
+    @Query("MATCH (c:Category) WHERE toLower(c.name) =~ toLower('.*'+ $0 +'.*') RETURN c")
+    List<Category> findByCategoryName(String name);
+
 }
