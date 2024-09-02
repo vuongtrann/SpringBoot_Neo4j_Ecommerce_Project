@@ -14,6 +14,7 @@ public interface CategoryService {
     public List<Category> getAllCategories();
     public Optional<Category> findById(Long id);
     public Optional<Category> getCategoryByName(String name);
+    public List<Product> getAllProductsByCategory(Long categoryId);
     public Category save(Category category);
     public Category addParent(Category category);
 

@@ -1,6 +1,7 @@
 package com.spring.ecommerce.persistence.repository;
 
 import com.spring.ecommerce.persistence.model.Category;
+import com.spring.ecommerce.persistence.model.Product;
 import org.springframework.data.neo4j.repository.Neo4jRepository;
 import org.springframework.data.neo4j.repository.query.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,5 +23,9 @@ public interface CategoryRepository extends Neo4jRepository<Category, Long> {
 
     @Query("MATCH (c:Category) WHERE toLower(c.name) =~ toLower('.*'+ $0 +'.*') RETURN c")
     List<Category> findByCategoryName(String name);
+
+    @Query("Match (n:Product)-[r:BELONGS_TO]->(c:Category) where id(c) = $id return n")
+    List<Product> getAllProductByCategory(@Param("id") Long id);
+
 
 }

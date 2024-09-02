@@ -12,6 +12,7 @@ import java.util.Optional;
 @Repository
 public interface ProductReprository extends Neo4jRepository<Product, Long> {
     @Query("MATCH (n:Product) WHERE toLower(n.name) =~ toLower('.*'+ $0 +'.*') RETURN n")
-    List<Product> findByNameProduct( String name);
+    List<Product> findByNameProduct(@Param("name") String name);
+
 
 }

@@ -3,6 +3,7 @@ package com.spring.ecommerce.controller;
 
 import com.spring.ecommerce.persistence.dto.CategoryForm;
 import com.spring.ecommerce.persistence.model.Category;
+import com.spring.ecommerce.persistence.model.Product;
 import com.spring.ecommerce.service.CategoryService;
 import com.spring.ecommerce.service.impl.CategoryServiceImpl;
 import com.spring.ecommerce.util.RestResponse;
@@ -31,6 +32,15 @@ public class CategoryController {
             return RestResponse.builder(null).message(e.getMessage()).build();
         }
 
+    }
+    @GetMapping("/{categoryId}/products")
+    public ResponseEntity<List<Product>> getAllProductByCategory(@PathVariable Long categoryId){
+        List<Product> products = categoryService.getAllProductsByCategory(categoryId);
+        if (products.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }else {
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        }
     }
 
     @GetMapping("/search")

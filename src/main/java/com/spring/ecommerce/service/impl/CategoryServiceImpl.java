@@ -48,6 +48,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<Product> getAllProductsByCategory(Long categoryId) {
+        return categoryRepository.getAllProductByCategory(categoryId);
+    }
+
+    @Override
     public Category save(Category category) throws NullPointerException {
         return categoryRepository.save(category);
     }
