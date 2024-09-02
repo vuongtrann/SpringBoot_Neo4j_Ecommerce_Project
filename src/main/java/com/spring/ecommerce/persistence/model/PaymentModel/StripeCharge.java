@@ -1,4 +1,4 @@
-package com.spring.ecommerce.persistence.model;
+package com.spring.ecommerce.persistence.model.PaymentModel;
 
 import lombok.Data;
 
