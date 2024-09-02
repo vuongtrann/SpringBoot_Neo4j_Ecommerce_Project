@@ -15,6 +15,6 @@ public interface BannerService {
     public List<String> saveMultil ( List<MultipartFile> files);
     public Banners update(MultipartFile file, Long idBanner) throws IOException;
     public void delete(Long id);
-    public void updateStatus(Long id);
+    public Banners updateStatus(Long id);
 
 }

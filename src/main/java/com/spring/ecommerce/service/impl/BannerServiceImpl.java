@@ -95,10 +95,10 @@ public class BannerServiceImpl implements BannerService {
 
 
     @Override
-    public void  updateStatus(Long id)throws NullPointerException {
+    public Banners  updateStatus(Long id)throws NullPointerException {
         Banners banners = bannerRepository.findById(id).orElseThrow(() -> new RuntimeException("Not found"));
         banners.setActive(!banners.isActive());
-        bannerRepository.save(banners);
+        return  bannerRepository.save(banners);
     }
 
 

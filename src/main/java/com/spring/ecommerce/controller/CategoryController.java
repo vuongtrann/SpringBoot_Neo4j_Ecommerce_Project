@@ -24,15 +24,16 @@ public class CategoryController {
 
     /**Get all category*/
     @GetMapping("")
-    public RestResponse getAllCategories() {
+    public ResponseEntity<List<Category>> getAllCategories() {
         try {
             List<Category> categoryList = categoryService.getAllCategories();
-            return RestResponse.builder(categoryList).message("Success").build();
+            return new ResponseEntity<>(categoryList, HttpStatus.OK);
         }catch (Exception e){
-            return RestResponse.builder(null).message(e.getMessage()).build();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
+
     @GetMapping("/{categoryId}/products")
     public ResponseEntity<List<Product>> getAllProductByCategory(@PathVariable Long categoryId){
         List<Product> products = categoryService.getAllProductsByCategory(categoryId);
@@ -44,77 +45,81 @@ public class CategoryController {
     }
 
     @GetMapping("/search")
-    public RestResponse getAllCategoriesByName(@RequestParam("name") String name) throws Exception{
+    public ResponseEntity<List<Category>> getAllCategoriesByName(@RequestParam("name") String name) throws Exception{
         try {
-            return RestResponse.builder(categoryService.findByCategoryName(name)).message("Success").build();
+//            return RestResponse.builder(categoryService.findByCategoryName(name)).message("Success").build();
+            return new  ResponseEntity<>(categoryService.findByCategoryName(name), HttpStatus.OK);
         }catch (Exception e){
-            return RestResponse.builder(null).message(e.getMessage()).build();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     /**Get category by id*/
     @GetMapping("/{categoryId}")
-    public RestResponse getCategoryById(@PathVariable Long categoryId) {
+    public ResponseEntity<Category> getCategoryById(@PathVariable Long categoryId) {
         try {
             Optional<Category> category = categoryService.findById(categoryId);
-            return RestResponse.builder(category).message("Success").build();
+            if (category.isPresent()){
+                return new ResponseEntity<>(category.get(), HttpStatus.OK);
+            }
+            else   return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }catch (Exception e) {
-            return RestResponse.builder(null).message(e.getMessage()).build();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     /** Add category*/
     @PostMapping("")
-    public RestResponse addCategory(@RequestBody Category category) {
+    public ResponseEntity<Category> addCategory(@RequestBody Category category) {
         try {
-            Category saveCategory = categoryService.save(category);
-            return RestResponse.builder(saveCategory).message("Success").build();
+            return new ResponseEntity<>(categoryService.save(category), HttpStatus.CREATED);
         }catch (Exception e) {
-            return RestResponse.builder(null).message(e.getMessage()).build();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     /** Add category with parent*/
     @PostMapping("/parent")
-    public RestResponse addCategoryWithParent( @RequestBody Category category) {
+    public ResponseEntity<Category> addCategoryWithParent( @RequestBody Category category) {
         try {
-            Category saveCategory = categoryService.addParent( category);
-            return RestResponse.builder(saveCategory).message("Success").build();
+            return new ResponseEntity<>(categoryService.save(category), HttpStatus.CREATED);
         }catch (Exception e) {
-            return RestResponse.builder(null).message(e.getMessage()).build();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     /** update category with parent*/
     @PutMapping ("/{categoryId}")
-    public RestResponse updateCategory(@PathVariable Long categoryId, @RequestBody Category category) {
+    public ResponseEntity<Category> updateCategory(@PathVariable Long categoryId, @RequestBody Category category) {
         try {
-            categoryService.update(categoryId, category);
-            return RestResponse.builder(category).message("Success").build();
+            return new ResponseEntity<>(categoryService.update(categoryId, category), HttpStatus.OK);
         }catch (Exception e) {
-            return RestResponse.builder(null).message(e.getMessage()).build();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
     @DeleteMapping("/{categoryId}")
-    public RestResponse deleteCategory(@PathVariable Long categoryId) {
+    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId) {
         try {
             categoryService.deleteById(categoryId);
-            return RestResponse.builder("Deleted category by id : " + categoryId).message("Success").build();
+            return new ResponseEntity<>("Deleted", HttpStatus.OK);
         }catch (Exception e){
-            return RestResponse.builder(null).message(e.getMessage()).build();
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
     }
 
 
     @GetMapping("/top")
-    public RestResponse getTopCategory(@RequestParam(defaultValue = "10") int limit) throws NullPointerException {
-        return RestResponse.builder(categoryService.getTopCategory(limit)).message("Success").build();
-
+    public ResponseEntity<List<Category>> getTopCategory(@RequestParam(defaultValue = "10") int limit) throws NullPointerException {
+        try {
+            return new ResponseEntity<>(categoryService.getTopCategory(limit), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 }
