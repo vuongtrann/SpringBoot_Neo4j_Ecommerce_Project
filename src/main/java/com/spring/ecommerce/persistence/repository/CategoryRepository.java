@@ -24,8 +24,8 @@ public interface CategoryRepository extends Neo4jRepository<Category, Long> {
     @Query("MATCH (c:Category) WHERE toLower(c.name) =~ toLower('.*'+ $0 +'.*') RETURN c")
     List<Category> findByCategoryName(String name);
 
-    @Query("Match (n:Product)-[r:BELONGS_TO]->(c:Category) where id(c) = $id return n")
-    List<Product> getAllProductByCategory(@Param("id") Long id);
+    @Query("MATCH (p:Product)-[:BELONGS_TO]->(c:Category) WHERE id(p)=$0 RETURN c")
+    List<Category> getAllCategoryByProductId(Long id);
 
 
 }

@@ -14,7 +14,7 @@
     <name>Ecommerce</name>
     <description>Ecommerce</description>
 
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 <!--    <packaging>war</packaging>-->
     <url/>
     <licenses>

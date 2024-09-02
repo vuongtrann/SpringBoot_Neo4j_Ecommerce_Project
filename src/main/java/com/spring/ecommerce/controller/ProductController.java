@@ -21,6 +21,11 @@ import java.util.*;
 @RestController
 @RequestMapping("/api/v2/products")
 public class ProductController {
+    private static final int MAX_LENGTH_NAME_PRODUCT = 120;
+    private static final int MIN_LENGTH_NAME_PRODUCT = 5;
+    private static final int MAX_LENGTH_DESCRIPTION_PRODUCT = 1000;
+    private static final int MIN_LENGTH_DESCRIPTION_PRODUCT = 200;
+
     @Autowired
     private ProductService productService;
     @Autowired
@@ -39,11 +44,17 @@ public class ProductController {
     /**Add product*/
     @PostMapping("")
     public ResponseEntity addProduct(@RequestBody ProductForm form)  {
-        if (form.getName().length()>120 || form.getName().length()<5){
-            return new ResponseEntity<>("Product name at least 5 and at most 120 characters !",HttpStatus.BAD_REQUEST);
+        if (form.getName().length() > MIN_LENGTH_NAME_PRODUCT && form.getName().length() < MAX_LENGTH_NAME_PRODUCT ){
+            if (form.getDescription().length() > MIN_LENGTH_DESCRIPTION_PRODUCT && form.getDescription().length() < MAX_LENGTH_DESCRIPTION_PRODUCT){
+                Product product = productService.add(form);
+                return new ResponseEntity<>(product,HttpStatus.CREATED);
+            }
+            else {
+                return new ResponseEntity<>("Description length should be greater than 200 characters and less than 1000 characters.", HttpStatus.BAD_REQUEST);
+            }
         }else {
-            Product product = productService.add(form);
-            return new ResponseEntity<>(product,HttpStatus.CREATED);
+            return new ResponseEntity<>("Product name length should be greater than 5 characters and less than 120 characters.",HttpStatus.BAD_REQUEST);
+
         }
     }
 
@@ -81,13 +92,18 @@ public class ProductController {
     /** READ */
 
     /**Get all product*/
+//    @GetMapping("")
+//    public ResponseEntity<List<Product>> getAllProducts() {
+//        if (productService.findAll().isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }else{
+//            return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
+//        }
+//    }
+
     @GetMapping("")
-    public ResponseEntity<List<Product>> getAllProducts() {
-        if (productService.findAll().isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }else{
-            return new ResponseEntity<>(productService.findAll(), HttpStatus.OK);
-        }
+    public ResponseEntity<List<Product>> getAllProducts(@RequestParam(name = "orderByCreatedAt",defaultValue = "ASC")String orderBy){
+        return new ResponseEntity<>(productService.findAllProduct(orderBy),HttpStatus.OK);
     }
 
     /**Get product by id*/
@@ -98,7 +114,6 @@ public class ProductController {
         }else {
             return new ResponseEntity<>(productService.findById(productId).get(), HttpStatus.OK);
         }
-
     }
 
     @GetMapping("/search")
@@ -111,13 +126,34 @@ public class ProductController {
         }
     }
 
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<Product>> getAllProductByCategory(@PathVariable Long categoryId){
+        List<Product> products = productService.getAllProductsByCategoryId(categoryId);
+        if (products.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }else {
+            return new ResponseEntity<>(products, HttpStatus.OK);
+        }
+    }
+
 
     /** UPDATE */
 
     /**Update product*/
     @PutMapping("/{productId}")
     public ResponseEntity updateProduct(@PathVariable("productId") Long productId, @RequestBody ProductForm form) {
-        return new ResponseEntity<>(productService.update(form,productId),HttpStatus.OK);
+        if (form.getName().length() > MIN_LENGTH_NAME_PRODUCT && form.getName().length() < MAX_LENGTH_NAME_PRODUCT ){
+            if (form.getDescription().length() > MIN_LENGTH_DESCRIPTION_PRODUCT && form.getDescription().length() < MAX_LENGTH_DESCRIPTION_PRODUCT){
+                Product newProduct = productService.update(form,productId);
+                return new ResponseEntity<>(newProduct,HttpStatus.CREATED);
+            }
+            else {
+                return new ResponseEntity<>("Description length should be greater than 200 characters and less than 1000 characters.", HttpStatus.BAD_REQUEST);
+            }
+        }else {
+            return new ResponseEntity<>("Product name length should be greater than 5 characters and less than 120 characters.",HttpStatus.BAD_REQUEST);
+
+        }
     }
 
     @PutMapping ("/sold/{id}/product")

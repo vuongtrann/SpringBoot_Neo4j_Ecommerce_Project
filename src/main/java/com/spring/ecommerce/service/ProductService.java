@@ -9,8 +9,10 @@ import java.util.Set;
 
 public interface ProductService {
     public List<Product> findAll();
+    public List<Product> findAllProduct(String orderBy);
     public Optional<Product> findById(Long id);
     public List<Product> findByNameProduct(String name);
+    public List<Product> getAllProductsByCategoryId(Long categoryId);
     public Product save(Product product);
     public void delete(Long id);
     public Product add(ProductForm form);

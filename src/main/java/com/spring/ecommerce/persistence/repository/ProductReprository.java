@@ -11,8 +11,15 @@ import java.util.Optional;
 
 @Repository
 public interface ProductReprository extends Neo4jRepository<Product, Long> {
+
+    @Query("match (n:Product) return n order by n.createdAt DESC")
+    List<Product> getAllProductDESC();
+    @Query("match (n:Product) return n order by n.createdAt ASC")
+    List<Product> getAllProductASC();
+
     @Query("MATCH (n:Product) WHERE toLower(n.name) =~ toLower('.*'+ $0 +'.*') RETURN n")
     List<Product> findByNameProduct(@Param("name") String name);
 
-
+    @Query("MATCH (n:Product)-[:BELONGS_TO]->(c:Category) WHERE id(c)=$0 RETURN n")
+    List<Product> getAllProductByCategoryId(Long id);
 }

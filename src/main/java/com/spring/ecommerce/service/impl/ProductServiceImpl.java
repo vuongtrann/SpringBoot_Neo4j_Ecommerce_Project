@@ -37,6 +37,17 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public List<Product> findAllProduct(String orderBy) {
+        if (orderBy.equals("DESC")){
+            return productReprository.getAllProductDESC();
+        }else{
+            return productReprository.getAllProductASC();
+        }
+
+    }
+
+
+    @Override
     public Optional<Product> findById(Long id) throws NullPointerException {
         Optional<Product> product = productReprository.findById(id);
         if (product.isPresent()) {
@@ -51,6 +62,10 @@ public class ProductServiceImpl implements ProductService {
         return productReprository.findByNameProduct(name);
     }
 
+    @Override
+    public List<Product> getAllProductsByCategoryId(Long categoryId) {
+        return productReprository.getAllProductByCategoryId(categoryId);
+    }
 
 
     @Override
@@ -71,7 +86,7 @@ public class ProductServiceImpl implements ProductService {
                 }).toList();
 
         Product product = new Product(form.getName(), form.getDescription(),form.getPrice(),items);
-        product.setCreateAt(LocalDateTime.now());
+        product.setCreatedAt(LocalDateTime.now());
         product = save(product);
         return product;
     }
@@ -95,7 +110,7 @@ public class ProductServiceImpl implements ProductService {
         existingProduct.setPrice(form.getPrice());
         existingProduct.setOldPrice(form.getOldPrice());
         existingProduct.setCategories(categories);
-        existingProduct.setUpdateAt(LocalDateTime.now());
+        existingProduct.setUpdatedAt(LocalDateTime.now());
         return save(existingProduct);
     }
 

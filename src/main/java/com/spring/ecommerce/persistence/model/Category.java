@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.neo4j.core.schema.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,8 @@ public class Category {
 
     private String name;
     private Long parentID;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
 
     @Relationship(type = "HAS_PRODUCTS",direction = Relationship.Direction.OUTGOING)
@@ -60,14 +63,6 @@ public class Category {
         this.name = name;
     }
 
-    public void addProduct(Product product) {
-        this.products.add(product);
-        product.getCategories().add(this);
-    }
-    public void removeProduct(Product product) {
-        this.products.remove(product);
-        product.getCategories().remove(this);
-    }
 
 
 

@@ -29,6 +29,11 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    public List<Category> getAllCategoryByProductId(Long productId) {
+        return categoryRepository.getAllCategoryByProductId(productId);
+    }
+
+    @Override
     public List<Category> findByCategoryName(String categoryName) {
         List<Category> categories = categoryRepository.findByCategoryName(categoryName);
         if (!categories.isEmpty()) {
@@ -47,10 +52,7 @@ public class CategoryServiceImpl implements CategoryService {
         return Optional.empty();
     }
 
-    @Override
-    public List<Product> getAllProductsByCategory(Long categoryId) {
-        return categoryRepository.getAllProductByCategory(categoryId);
-    }
+
 
     @Override
     public Category save(Category category) throws NullPointerException {
@@ -115,11 +117,6 @@ public class CategoryServiceImpl implements CategoryService {
             throw new RuntimeException("Id is null");
         }
         categoryRepository.deleteById(id);
-    }
-
-    @Override
-    public Product addProduct(Long categoryId, Product newProduct) {
-        return null;
     }
 
 

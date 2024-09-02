@@ -34,15 +34,6 @@ public class CategoryController {
 
     }
 
-    @GetMapping("/{categoryId}/products")
-    public ResponseEntity<List<Product>> getAllProductByCategory(@PathVariable Long categoryId){
-        List<Product> products = categoryService.getAllProductsByCategory(categoryId);
-        if (products.isEmpty()){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }else {
-            return new ResponseEntity<>(products, HttpStatus.OK);
-        }
-    }
 
     @GetMapping("/search")
     public ResponseEntity<List<Category>> getAllCategoriesByName(@RequestParam("name") String name) throws Exception{
@@ -51,6 +42,16 @@ public class CategoryController {
             return new  ResponseEntity<>(categoryService.findByCategoryName(name), HttpStatus.OK);
         }catch (Exception e){
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<List<Category>> getAllCategoryByProductId(@PathVariable Long productId){
+        List<Category> categories = categoryService.getAllCategoryByProductId(productId);
+        if (categories.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }else{
+            return new ResponseEntity<>(categories,HttpStatus.OK);
         }
     }
 

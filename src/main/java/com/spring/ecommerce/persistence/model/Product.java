@@ -36,8 +36,8 @@ public class Product {
     private int remainingQuantity;
     private String brandName;
 
-    private LocalDateTime createAt;
-    private LocalDateTime updateAt;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     @Relationship(type = "BELONGS_TO", direction = Relationship.Direction.OUTGOING)
     private List<Category> categories = new ArrayList<>();
