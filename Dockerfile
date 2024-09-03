@@ -1,6 +1,6 @@
 # Importing JDK and copying required files
 FROM openjdk:17-jdk AS build
-WORKDIR /app
+WORKDIR /Ecommerce
 COPY pom.xml .
 COPY src src
 
@@ -17,6 +17,6 @@ FROM openjdk:17-jdk
 VOLUME /tmp
 
 # Copy the JAR from the build stage
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /Ecommerce/target/*.jar app.jar
 ENTRYPOINT ["java","-jar","/app.jar"]
 EXPOSE 8080
