@@ -36,9 +36,19 @@ public class Category {
     @JsonIgnore
     private Set<Product> products = new HashSet<>();
 
+//    @Relationship(type = "Has_parent", direction = Relationship.Direction.OUTGOING)
+//    @JsonIgnore
+//    private Category categories;
+
     @Relationship(type = "Has_parent", direction = Relationship.Direction.OUTGOING)
     @JsonIgnore
-    private Category categories;
+    private List<Category> categories = new ArrayList<>();
+
+    @Relationship(type = "Has_parent", direction = Relationship.Direction.INCOMING)
+    private List<Category> subCategory ;
+
+
+
 
     @Transient
     private int noOfViews;
@@ -46,22 +56,27 @@ public class Category {
     @Transient
     private int productsSold;
 
-    public Category(String name, Category categories) {
+    public Category(String name, List<Category> categories) {
         this.name = name;
         this.categories = categories;
     }
-    /** Constructor*/
-    public Category(String name, Long parentID) {
-        this.name = name;
-        this.parentID = parentID;
-    }
 
-    public Category(Long id) {
-        this.id = id;
-    }
-    public Category(String name) {
-        this.name = name;
-    }
+    //    public Category(String name, Category categories) {
+//        this.name = name;
+//        this.categories = categories;
+//    }
+//    /** Constructor*/
+//    public Category(String name, Long parentID) {
+//        this.name = name;
+//        this.parentID = parentID;
+//    }
+//
+//    public Category(Long id) {
+//        this.id = id;
+//    }
+//    public Category(String name) {
+//        this.name = name;
+//    }
 
 
 

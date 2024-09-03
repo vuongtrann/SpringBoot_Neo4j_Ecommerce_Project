@@ -10,6 +10,7 @@ import com.spring.ecommerce.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -76,14 +77,28 @@ public class CategoryServiceImpl implements CategoryService {
 //    }
 
     @Override
-    public Category addParent(Category category) {
-        Long parentID = category.getParentID();
-        if (parentID != null) {
-            Category parent = categoryRepository.findById(parentID)
-                    .orElseThrow(()-> new RuntimeException("Parent category not found"));
-            category.setCategories(parent);
-        }
-        return categoryRepository.save(category);
+    public Category addParent(CategoryForm form) {
+        List<Category> items = form.getCategories().stream()
+                .map(item ->{
+                    Optional<Category> opt = categoryRepository.findById(item);
+                    if (opt.isPresent()){
+                        Category category = opt.get();
+                        return category;
+                    }
+                    return null;
+                }).toList();
+
+        Category category = new Category(form.getName(), items);
+        category.setCreatedAt(LocalDateTime.now());
+        category = save(category);
+        return category;
+//        Long parentID = category.getParentID();
+//        if (parentID != null) {
+//            Category parent = categoryRepository.findById(parentID)
+//                    .orElseThrow(()-> new RuntimeException("Parent category not found"));
+//            category.setCategories(parent);
+//        }
+//        return categoryRepository.save(category);
     }
 
     @Override

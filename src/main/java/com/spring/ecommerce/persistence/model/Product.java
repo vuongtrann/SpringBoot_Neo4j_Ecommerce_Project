@@ -7,9 +7,7 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.*;
 
 @Node("Product")
@@ -26,7 +24,8 @@ public class Product {
     private List<String> imageURL;
     private String primaryImageURL;
     private String description;
-    private double oldPrice;
+    private Double msrp;
+    private Double salePrice;
     private Double price;
     private Double rating;
     private int viewCount;
@@ -36,12 +35,18 @@ public class Product {
     private int remainingQuantity;
     private String brandName;
 
+    private String sellingTypes;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
     @Relationship(type = "BELONGS_TO", direction = Relationship.Direction.OUTGOING)
     private List<Category> categories = new ArrayList<>();
+//    @Relationship(type = "BELONGS_TO", direction = Relationship.Direction.INCOMING)
+//    private List<Category> categories = new ArrayList<>();
 
+    @Relationship(type = "HAS_DIMENSIONS",direction = Relationship.Direction.OUTGOING)
+    private ProductDimensions dimensions;
 
 //    public void addCategory(Category category) {
 //        this.categories.add(category);
@@ -59,10 +64,18 @@ public class Product {
 //        this.price = price;
 //    }
 //
-    public Product(String name, String description, Double price, List<Category> categories) {
+
+    public Product(String name, String description, Double msrp, Double salePrice, Double price, int quantity,
+                   String SKU, String sellingTypes, List<Category> categories, ProductDimensions dimensions) {
         this.name = name;
         this.description = description;
+        this.msrp = msrp;
+        this.salePrice = salePrice;
         this.price = price;
+        this.quantity = quantity;
+        this.SKU = SKU;
+        this.sellingTypes = sellingTypes;
         this.categories = categories;
+        this.dimensions = dimensions;
     }
 }

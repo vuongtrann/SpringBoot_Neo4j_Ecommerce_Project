@@ -82,9 +82,9 @@ public class CategoryController {
 
     /** Add category with parent*/
     @PostMapping("/parent")
-    public ResponseEntity<Category> addCategoryWithParent( @RequestBody Category category) {
+    public ResponseEntity<Category> addCategoryWithParent( @RequestBody CategoryForm form) {
         try {
-            return new ResponseEntity<>(categoryService.save(category), HttpStatus.CREATED);
+            return new ResponseEntity<>(categoryService.addParent(form), HttpStatus.CREATED);
         }catch (Exception e) {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }

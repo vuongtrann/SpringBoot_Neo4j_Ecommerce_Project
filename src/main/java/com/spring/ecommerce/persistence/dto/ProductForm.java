@@ -1,16 +1,10 @@
 package com.spring.ecommerce.persistence.dto;
 
-import com.spring.ecommerce.persistence.model.Category;
+import com.spring.ecommerce.persistence.model.ProductDimensions;
 import lombok.*;
-import org.springframework.data.neo4j.core.schema.GeneratedValue;
-import org.springframework.data.neo4j.core.schema.Id;
-import org.springframework.data.neo4j.core.schema.Node;
-import org.springframework.data.neo4j.core.schema.Relationship;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -21,17 +15,19 @@ public class ProductForm {
     private String name;
     private List<String> imageURL;
     private String description;
-    private double oldPrice;
+    private Double msrp;
+    private Double salePrice;
     private Double price;
-    private Double rating;
-    private int viewCount;
-    private int quantitySold;
-    private int remainingQuantity;
+    private int quantity;
+    private String SKU;
     private String brandName;
 
+    private String sellingTypes;
     private List<Long> categories = new ArrayList<>();
 
+    private ProductDimensions dimensions;
 
-    public ProductForm(String name, List<String> imageURL, String description, double oldPrice, Double rating, int viewCount, int quantitySold, int remainingQuantity, String brandName) {
-    }
+//    public ProductForm(String name, List<String> imageURL, String description, Double msrp,Double salePrice,Double price,
+//                       Double rating, int viewCount, int quantitySold, int remainingQuantity, String brandName) {
+//    }
 }

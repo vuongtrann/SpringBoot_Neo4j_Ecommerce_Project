@@ -20,6 +20,6 @@ public interface ProductReprository extends Neo4jRepository<Product, Long> {
     @Query("MATCH (n:Product) WHERE toLower(n.name) =~ toLower('.*'+ $0 +'.*') RETURN n")
     List<Product> findByNameProduct(@Param("name") String name);
 
-    @Query("MATCH (n:Product)-[:BELONGS_TO]->(c:Category) WHERE id(c)=$0 RETURN n")
+    @Query("MATCH (n:Product)-[r:BELONGS_TO]->(c:Category) WHERE id(c)=$0 RETURN n")
     List<Product> getAllProductByCategoryId(Long id);
 }

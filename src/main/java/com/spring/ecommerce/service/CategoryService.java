@@ -16,7 +16,7 @@ public interface CategoryService {
     public Optional<Category> findById(Long id);
     public Optional<Category> getCategoryByName(String name);
     public Category save(Category category);
-    public Category addParent(Category category);
+    public Category addParent(CategoryForm form);
 
     public List<Category> saveAll(List<Category> categories);
     public Category update(Long catId ,Category category);

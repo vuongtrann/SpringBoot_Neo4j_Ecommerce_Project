@@ -2,9 +2,11 @@ package com.spring.ecommerce.service.impl;
 
 import com.spring.ecommerce.persistence.dto.ProductForm;
 import com.spring.ecommerce.persistence.model.Category;
+import com.spring.ecommerce.persistence.model.ProductDimensions;
 import com.spring.ecommerce.persistence.model.Review;
 import com.spring.ecommerce.persistence.model.Product;
 import com.spring.ecommerce.persistence.repository.CategoryRepository;
+import com.spring.ecommerce.persistence.repository.ProductDimensionsRepository;
 import com.spring.ecommerce.persistence.repository.ReviewRepository;
 import com.spring.ecommerce.persistence.repository.ProductReprository;
 import com.spring.ecommerce.service.CategoryService;
@@ -29,6 +31,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     CategoryService categoryService;
+    @Autowired
+    private ProductDimensionsRepository productDimensionsRepository;
 
 
     @Override
@@ -85,7 +89,9 @@ public class ProductServiceImpl implements ProductService {
                     return null;
                 }).toList();
 
-        Product product = new Product(form.getName(), form.getDescription(),form.getPrice(),items);
+        ProductDimensions dimensions = productDimensionsRepository.save(form.getDimensions());
+        Product product = new Product(form.getName(), form.getDescription(),form.getMsrp(),form.getSalePrice(),
+                form.getPrice(),form.getQuantity(),form.getSKU(),form.getSellingTypes(),items,dimensions);
         product.setCreatedAt(LocalDateTime.now());
         product = save(product);
         return product;
@@ -104,13 +110,18 @@ public class ProductServiceImpl implements ProductService {
                     return null;
                 }).toList();
 
+
         existingProduct.setName(form.getName());
-        existingProduct.setImageURL(form.getImageURL());
         existingProduct.setDescription(form.getDescription());
+        existingProduct.setMsrp(form.getMsrp());
+        existingProduct.setSalePrice(form.getSalePrice());
         existingProduct.setPrice(form.getPrice());
-        existingProduct.setOldPrice(form.getOldPrice());
+        existingProduct.setQuantity(form.getQuantity());
+        existingProduct.setSKU(form.getSKU());
+        existingProduct.setSellingTypes(form.getSellingTypes());
         existingProduct.setCategories(categories);
         existingProduct.setUpdatedAt(LocalDateTime.now());
+        existingProduct.setDimensions(form.getDimensions());
         return save(existingProduct);
     }
 
