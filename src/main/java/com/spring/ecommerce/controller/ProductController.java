@@ -108,6 +108,11 @@ public class ProductController {
         return new ResponseEntity<>(productService.findAllProduct(orderBy),HttpStatus.OK);
     }
 
+    @GetMapping("/a")
+    public ResponseEntity<List<Product>> getAll(){
+        return new ResponseEntity<>(productService.findAll(),HttpStatus.OK);
+    }
+
     /**Get product by id*/
     @GetMapping("/{productId}")
     public ResponseEntity<Product> getProductById(@PathVariable("productId") Long productId) {

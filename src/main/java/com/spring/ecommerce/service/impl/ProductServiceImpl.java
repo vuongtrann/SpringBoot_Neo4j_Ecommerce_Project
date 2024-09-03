@@ -12,6 +12,7 @@ import com.spring.ecommerce.persistence.repository.ProductReprository;
 import com.spring.ecommerce.service.CategoryService;
 import com.spring.ecommerce.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -43,9 +44,10 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<Product> findAllProduct(String orderBy) {
         if (orderBy.equals("DESC")){
-            return productReprository.getAllProductDESC();
+            return productReprository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+
         }else{
-            return productReprository.getAllProductASC();
+            return productReprository.findAll(Sort.by(Sort.Direction.ASC, "createdAt"));
         }
 
     }
