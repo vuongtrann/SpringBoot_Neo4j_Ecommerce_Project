@@ -17,6 +17,6 @@ FROM openjdk:17-jdk
 VOLUME /tmp
 
 # Copy the JAR from the build stage
-COPY --from=build /Ecommerce/target/*.jar app.war
-ENTRYPOINT ["java","-jar","/app.war"]
+COPY --from=build /Ecommerce/target/*.jar Ecommerce-0.0.1-SNAPSHOT.jar
+ENTRYPOINT ["java","-jar","/Ecommerce-0.0.1-SNAPSHOT.jar"]
 EXPOSE 8080
