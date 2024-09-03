@@ -20,7 +20,7 @@ public class ProductDimensions {
     @Id
     @GeneratedValue
     private Long id;
-    private double weigth;
+    private double weight;
     private double length;
     private double width;
     private double height;

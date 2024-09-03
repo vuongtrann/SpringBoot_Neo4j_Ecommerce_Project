@@ -20,12 +20,13 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/v2/products")
+@CrossOrigin(origins = "http://localhost:3000")
 public class ProductController {
     private static final int MAX_LENGTH_NAME_PRODUCT = 120;
     private static final int MIN_LENGTH_NAME_PRODUCT = 5;
     private static final int MAX_LENGTH_DESCRIPTION_PRODUCT = 1000;
     private static final int MIN_LENGTH_DESCRIPTION_PRODUCT = 200;
-    private static final List<String> SELLING_TYPE = List.of("ONLINE","INSTORE","ONLINEANDINSTORE");
+    //private static final List<String> SELLING_TYPE = List.of("ONLINE","INSTORE","ONLINEANDINSTORE");
 
     @Autowired
     private ProductService productService;
@@ -47,13 +48,8 @@ public class ProductController {
     public ResponseEntity addProduct(@RequestBody ProductForm form)  {
         if (form.getName().length() > MIN_LENGTH_NAME_PRODUCT && form.getName().length() < MAX_LENGTH_NAME_PRODUCT ){
             if (form.getDescription().length() > MIN_LENGTH_DESCRIPTION_PRODUCT && form.getDescription().length() < MAX_LENGTH_DESCRIPTION_PRODUCT){
-                if (SELLING_TYPE.contains(form.getSellingTypes())) {
-                    Product product = productService.add(form);
-                    return new ResponseEntity<>(product, HttpStatus.CREATED);
-                }
-                else {
-                    return new ResponseEntity<>("",HttpStatus.NOT_FOUND);
-                }
+                Product product = productService.add(form);
+                return new ResponseEntity<>(product, HttpStatus.CREATED);
             }
             else {
                 return new ResponseEntity<>("Description length should be greater than 200 characters and less than 1000 characters.", HttpStatus.BAD_REQUEST);

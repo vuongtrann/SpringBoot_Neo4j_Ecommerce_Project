@@ -89,9 +89,9 @@ public class ProductServiceImpl implements ProductService {
                     return null;
                 }).toList();
 
-        ProductDimensions dimensions = productDimensionsRepository.save(form.getDimensions());
+        //ProductDimensions dimensions = productDimensionsRepository.save(form.getDimensions());
         Product product = new Product(form.getName(), form.getDescription(),form.getMsrp(),form.getSalePrice(),
-                form.getPrice(),form.getQuantity(),form.getSKU(),form.getSellingTypes(),items,dimensions);
+                form.getPrice(),form.getQuantity(),form.getSKU(),form.getSellingTypes(),items,form.getDimensions());
         product.setCreatedAt(LocalDateTime.now());
         product = save(product);
         return product;
