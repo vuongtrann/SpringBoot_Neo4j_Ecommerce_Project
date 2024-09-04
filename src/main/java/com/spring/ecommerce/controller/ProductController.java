@@ -20,7 +20,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/v2/products")
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "https://minhhieu212.github.io/")
 public class ProductController {
     private static final int MAX_LENGTH_NAME_PRODUCT = 120;
     private static final int MIN_LENGTH_NAME_PRODUCT = 5;
