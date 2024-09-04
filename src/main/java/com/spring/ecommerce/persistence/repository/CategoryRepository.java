@@ -28,4 +28,8 @@ public interface CategoryRepository extends Neo4jRepository<Category, Long> {
     List<Category> getAllCategoryByProductId(Long id);
 
 
+    @Query("MATCH (n:Category)-[r:Has_parent]->(c:Category) WHERE c.level= 1 RETURN c")
+    List<Category> getAllCategory();
+
+
 }

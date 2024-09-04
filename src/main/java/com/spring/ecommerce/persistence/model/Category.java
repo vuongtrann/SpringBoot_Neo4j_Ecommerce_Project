@@ -27,7 +27,7 @@ public class Category {
     private Long id;
 
     private String name;
-    private Long parentID;
+    private int level;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -56,9 +56,10 @@ public class Category {
     @Transient
     private int productsSold;
 
-    public Category(String name, List<Category> categories) {
+    public Category(String name, int level, List<Category> categories) {
         this.name = name;
         this.categories = categories;
+        this.level = level;
     }
 
     //    public Category(String name, Category categories) {

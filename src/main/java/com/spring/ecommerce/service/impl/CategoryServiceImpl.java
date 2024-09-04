@@ -14,6 +14,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class CategoryServiceImpl implements CategoryService {
 
@@ -26,6 +28,10 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> getAllCategories()throws NullPointerException {
+//        List<Category> categories = categoryRepository.findAll();
+//        return categories.stream()
+//                .filter(category -> category.getLevel()==1)
+//                .collect(Collectors.toList());
         return categoryRepository.findAll();
     }
 
@@ -88,7 +94,7 @@ public class CategoryServiceImpl implements CategoryService {
                     return null;
                 }).toList();
 
-        Category category = new Category(form.getName(), items);
+        Category category = new Category(form.getName(),form.getLevel(), items);
         category.setCreatedAt(LocalDateTime.now());
         category = save(category);
         return category;

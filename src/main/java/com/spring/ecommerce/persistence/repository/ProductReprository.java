@@ -25,4 +25,5 @@ public interface ProductReprository extends Neo4jRepository<Product, Long> {
     List<Product> getAllProductByCategoryId(Long id);
 
     List<Product> findAll(Sort sort);
+
 }

@@ -18,7 +18,7 @@ public class CategoryForm {
     @GeneratedValue
     private Long id;
     private String name;
-    //private Long parentID;
+    private int level;
 
     List<Long> categories = new ArrayList<>();
 
