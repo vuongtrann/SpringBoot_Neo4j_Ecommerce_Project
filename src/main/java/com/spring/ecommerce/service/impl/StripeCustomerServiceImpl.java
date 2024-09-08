@@ -1,6 +1,7 @@
 package com.spring.ecommerce.service.impl;
 
 import com.spring.ecommerce.persistence.model.PaymentModel.*;
+import com.spring.ecommerce.persistence.repository.CustomerRepository;
 import com.spring.ecommerce.persistence.repository.stripeRepository.StripeCustomerRepository;
 import com.spring.ecommerce.persistence.repository.stripeRepository.StripeInvoiceRepository;
 import com.spring.ecommerce.service.StripeCustomerService;
@@ -25,25 +26,25 @@ public class StripeCustomerServiceImpl implements StripeCustomerService {
     @Autowired
     private StripeInvoiceRepository stripeInvoiceRepository;
 
-    public StripeCustomer createCustomer(StripeCustomer customerStripe) throws StripeException, NullPointerException {
-        if (!(customerStripe.getName().isEmpty() && customerStripe.getBalance() == 0)) {
 
+    public StripeCustomer createCustomer(StripeCustomer stripeCustomer) throws StripeException, NullPointerException {
+        if (!(stripeCustomer.getName().isEmpty())) {
             Map<String, Object> prepareData = new HashMap<>();
-            prepareData.put("name", customerStripe.getName());
-            prepareData.put("balance", customerStripe.getBalance());
-            prepareData.put("email", customerStripe.getEmail());
-            prepareData.put("phone", customerStripe.getPhone());
-            if (customerStripe.getPayment_method()!= null){
-                prepareData.put("payment_method", customerStripe.getPayment_method());
-                customerStripe.getInvoice_settings().put("default_payment_method", customerStripe.getPayment_method());
-                prepareData.put("invoice_settings", customerStripe.getInvoice_settings());
+            prepareData.put("name", stripeCustomer.getName());
+            prepareData.put("balance", stripeCustomer.getBalance());
+            prepareData.put("email", stripeCustomer.getEmail());
+            prepareData.put("phone", stripeCustomer.getPhone());
+            if (stripeCustomer.getPayment_method()!= null){
+                prepareData.put("payment_method", stripeCustomer.getPayment_method());
+                stripeCustomer.getInvoice_settings().put("default_payment_method", stripeCustomer.getPayment_method());
+                prepareData.put("invoice_settings", stripeCustomer.getInvoice_settings());
             }
-            com.stripe.model.Customer stripeCustomer = com.stripe.model.Customer.create(prepareData);
-            if (!Objects.isNull(stripeCustomer)) {
-                customerStripe.setId(stripeCustomer.getId());
-                stripeCustomerRepository.save(customerStripe);
+            com.stripe.model.Customer customer = com.stripe.model.Customer.create(prepareData);
+            if (!Objects.isNull(customer)) {
+                stripeCustomer.setId(customer.getId());
+                stripeCustomerRepository.save(stripeCustomer);
             }
-            return customerStripe;
+            return stripeCustomer;
         }
         else return null;
 
@@ -51,7 +52,29 @@ public class StripeCustomerServiceImpl implements StripeCustomerService {
 
 
 
+    @Override
+    public StripeCustomer findById(String customerId) throws Exception, StripeException{
+        StripeCustomer stripeCustomer = stripeCustomerRepository.findCustomerById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+        return stripeCustomer;
+    }
 
+
+    @Override
+    public StripeCustomer updateCustomer(StripeCustomer stripeCustomer) throws Exception, StripeException{
+        return null;
+    }
+
+
+    @Override
+    public void delete(String stripeCustomerId) throws Exception, StripeException{
+        if (stripeCustomerId.isEmpty()) {
+            throw new RuntimeException("Customer id is empty");
+        }
+
+        stripeInvoiceRepository.deleteById(stripeCustomerId);
+        Customer.retrieve(stripeCustomerId).delete();
+    }
 
 
 

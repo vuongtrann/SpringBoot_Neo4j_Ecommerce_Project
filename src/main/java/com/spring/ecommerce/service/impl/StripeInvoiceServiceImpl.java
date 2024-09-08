@@ -5,11 +5,11 @@ import com.spring.ecommerce.persistence.model.PaymentModel.StripeInvoiceItem;
 import com.spring.ecommerce.persistence.repository.stripeRepository.StripeCustomerRepository;
 import com.spring.ecommerce.persistence.repository.stripeRepository.StripeInvoiceRepository;
 import com.spring.ecommerce.service.StripeInvoiceService;
+import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.Customer;
 import com.stripe.model.Invoice;
 import com.stripe.model.InvoiceItem;
-import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -70,40 +70,17 @@ public class StripeInvoiceServiceImpl implements StripeInvoiceService {
 
     }
 
-
-    public StripeInvoice createInvoiceItem(StripeInvoiceItem item) throws StripeException{
-        if (item.getCustomerId() == null && item.getInvoiceId() == null) {
-            return null;
-        }
-
-        else{
-            Customer.retrieve(item.getCustomerId());
-            Invoice.retrieve(item.getInvoiceId());
-
-            Map<String, Object> prepareData = new HashMap<>();
-            prepareData.put("customer", item.getCustomerId());
-            prepareData.put("invoice", item.getInvoiceId());
-            prepareData.put("amount", item.getAmount());
-
-            InvoiceItem invoiceItem = InvoiceItem.create(prepareData);
-            if (invoiceItem != null) {
-                StripeInvoice stripeInvoice = stripeInvoiceRepository.
-                        findById(item.getInvoiceId()).orElseThrow(() -> new RuntimeException("Stripe invoice not found"));
-                stripeInvoice.additem(invoiceItem.getId());
-                stripeInvoice.setTotalAmount(stripeInvoice.getTotalAmount() + item.getAmount());
-                return stripeInvoiceRepository.save(stripeInvoice);
-
-            }
-        }
-
-
-        return null;
+    public StripeInvoice findInvoiceById(String invoiceId) throws StripeException{
+        StripeInvoice stripeInvoice = stripeInvoiceRepository.findById(invoiceId)
+                .orElseThrow(() -> new RuntimeException("Stripe invoice not found: " + invoiceId));
+        return stripeInvoice;
     }
 
 
-    public StripeInvoice deleteInvoiceItem(String invoiceItemId) throws StripeException{
-        return null;
-    }
+
+
+
+
 
 
     @Override
@@ -127,6 +104,9 @@ public class StripeInvoiceServiceImpl implements StripeInvoiceService {
         if (stripeInvoice.getStatus().equals("open")) {
             Invoice invoice = Invoice.retrieve(invoiceId).pay();
             stripeInvoice.setStatus(invoice.getStatus());
+            stripeInvoice.setChargeId(invoice.getCharge());
+            stripeInvoice.setPaymentIntent(invoice.getPaymentIntent());
+
             return stripeInvoiceRepository.save(stripeInvoice);
         }
 
@@ -134,6 +114,42 @@ public class StripeInvoiceServiceImpl implements StripeInvoiceService {
     }
 
 
+
+    public StripeInvoice createInvoiceItem(StripeInvoiceItem item) throws StripeException{
+        if (item.getCustomerId() == null && item.getInvoiceId() == null) {
+            return null;
+        }
+
+        else{
+            Customer.retrieve(item.getCustomerId());
+            Invoice.retrieve(item.getInvoiceId());
+
+            Map<String, Object> prepareData = new HashMap<>();
+            prepareData.put("customer", item.getCustomerId());
+            prepareData.put("invoice", item.getInvoiceId());
+            prepareData.put("amount", item.getAmount());
+
+            InvoiceItem invoiceItem = InvoiceItem.create(prepareData);
+            if (invoiceItem != null) {
+                StripeInvoice stripeInvoice = stripeInvoiceRepository.
+                        findById(item.getInvoiceId()).orElseThrow(() -> new RuntimeException("Stripe invoice not found"));
+//                stripeInvoice.additem(invoiceItem.getId());
+                stripeInvoice.getInvoiceItemId().add(invoiceItem.getId());
+                stripeInvoice.setAmount_due(stripeInvoice.getAmount_due());
+                return stripeInvoiceRepository.save(stripeInvoice);
+
+            }
+        }
+
+
+        return null;
+    }
+
+
+
+    public StripeInvoice deleteInvoiceItem(String invoiceItemId) throws StripeException{
+        return null;
+    }
 
 
 }

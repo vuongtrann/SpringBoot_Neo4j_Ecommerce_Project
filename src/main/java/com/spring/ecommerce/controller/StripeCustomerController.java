@@ -2,6 +2,7 @@ package com.spring.ecommerce.controller;
 
 import com.spring.ecommerce.persistence.model.PaymentModel.StripeCustomer;
 import com.spring.ecommerce.persistence.model.PaymentModel.StripePayment;
+import com.spring.ecommerce.persistence.repository.CustomerRepository;
 import com.spring.ecommerce.service.StripeInvoiceService;
 import com.spring.ecommerce.service.impl.StripeCustomerServiceImpl;
 import com.spring.ecommerce.service.impl.StripeInvoiceServiceImpl;
@@ -32,6 +33,24 @@ public class StripeCustomerController {
         }
         else return RestResponse.builder().message("Error").build();
 
+    }
+
+    @RequestMapping(value = "/{customerId}", method = RequestMethod.GET)
+    public RestResponse getCustomer (@PathVariable("customerId") String customerId) throws Exception {
+        if (customerId.isEmpty()) {
+            return RestResponse.builder().message("Error").build();
+        }
+        else return RestResponse.builder(stripeCustomerService.findById(customerId)).message("Success").build();
+    }
+
+
+    @RequestMapping(value = "/{customerId}",method = RequestMethod.DELETE)
+    public RestResponse deleteCustomer (@PathVariable("customerId") String customerId) throws Exception {
+        if (customerId.isEmpty()) {
+            return RestResponse.builder().message("Error").build();
+        }
+        stripeCustomerService.delete(customerId);
+        return RestResponse.builder().message("Success").build();
     }
 
 

@@ -28,6 +28,8 @@ public class StripeCustomer {
     private String phone;
     private String currency;
     private String payment_method;
+    private String default_Payment_method;
+//    private String default_Payment_method;
     @Transient
     private Map<String, String> invoice_settings = new HashMap<>();
 

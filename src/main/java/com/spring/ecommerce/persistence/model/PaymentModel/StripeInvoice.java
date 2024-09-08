@@ -7,7 +7,6 @@ import org.springframework.data.neo4j.core.schema.Id;
 import org.springframework.data.neo4j.core.schema.Node;
 import org.springframework.data.neo4j.core.schema.Relationship;
 
-import java.io.DataOutput;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +24,10 @@ public class StripeInvoice {
     private String description;
     private String currency="usd";
     private List<String> invoiceItemId = new ArrayList<>();
-    private double totalAmount;
+    private double amount_due;
+    private String chargeId;
+    private String paymentIntent;
+
 
     @Relationship(value = "BELONG_TO", direction = Relationship.Direction.OUTGOING)
     @JsonIgnore
@@ -38,11 +40,10 @@ public class StripeInvoice {
         this.description = invoice.getDescription();
         this.customerId = invoice.getCustomer();
         this.status = invoice.getStatus();
+        this.amount_due = invoice.getAmountDue();
+        this.chargeId = invoice.getCharge();
+        this.paymentIntent = invoice.getPaymentIntent();
 
-    }
-
-    public void additem(String itemId) {
-        this.invoiceItemId.add(itemId);
     }
 
 
